@@ -1,6 +1,6 @@
 """
-评估脚本 —— Baseline vs LoRA 微调模型对比
-在测试集上分别运行两个模型，计算 WER/CER，输出对比结果。
+Evaluation script —— Baseline vs LoRA fine-tuned model comparison
+Runs both models on the test set, computes WER/CER, and outputs comparison results.
 """
 
 from pathlib import Path
@@ -19,18 +19,18 @@ from model import load_baseline_model, load_processor
 
 def transcribe_dataset(model, processor, dataset, device, audio_dir, sampling_rate=16000, batch_size=4):
     """
-    用给定模型对数据集进行推理，返回预测文本列表。
-    使用 soundfile 按需加载音频，与 data.py 保持一致。
+    Run inference on the dataset with the given model and return a list of predicted texts.
+    Uses soundfile to load audio on demand, consistent with data.py.
     """
     model.eval()
     predictions = []
     audio_dir = Path(audio_dir)
 
-    for i in tqdm(range(0, len(dataset), batch_size), desc="推理中"):
+    for i in tqdm(range(0, len(dataset), batch_size), desc="Transcribing"):
         batch = dataset[i : i + batch_size]
         file_names = batch["file_name"] if isinstance(batch["file_name"], list) else [batch["file_name"]]
 
-        # 用 soundfile 加载音频并提取特征
+        # Load audio with soundfile and extract features
         input_features_list = []
         for fname in file_names:
             audio_path = audio_dir / Path(fname).name
@@ -61,23 +61,23 @@ def transcribe_dataset(model, processor, dataset, device, audio_dir, sampling_ra
 def main():
     cfg = ProjectConfig()
     device = cfg.device
-    print(f"🔧 评估设备: {device}")
+    print(f"🔧 Evaluation device: {device}")
 
     processor = load_processor(cfg)
     normalizer = BasicTextNormalizer()
 
-    # ── 加载测试集 ────────────────────────────────────────
-    print("📦 加载数据集...")
+    # ── Load test set ─────────────────────────────────────────────────────────
+    print("📦 Loading dataset...")
     splits = load_and_split_dataset(cfg)
     test_dataset = splits["test"]
-    print(f"   测试集: {len(test_dataset)} 条")
+    print(f"   Test set: {len(test_dataset)} samples")
 
-    # 提取真实标签
+    # Extract ground-truth labels
     references = test_dataset["transcription"]
 
-    # ── Baseline 模型评估 ─────────────────────────────────
+    # ── Baseline model evaluation ─────────────────────────────────────────────
     print("\n═══════════════════════════════════════════")
-    print("📊 评估 Baseline 模型（无微调）")
+    print("📊 Evaluating Baseline model (no fine-tuning)")
     print("═══════════════════════════════════════════")
 
     baseline_model = load_baseline_model(cfg)
@@ -91,16 +91,16 @@ def main():
     del baseline_model
     torch.cuda.empty_cache() if device == "cuda" else None
 
-    # ── LoRA 微调模型评估 ─────────────────────────────────
+    # ── LoRA fine-tuned model evaluation ──────────────────────────────────────
     print("\n═══════════════════════════════════════════")
-    print("📊 评估 LoRA 微调模型")
+    print("📊 Evaluating LoRA fine-tuned model")
     print("═══════════════════════════════════════════")
 
     adapter_path = f"{cfg.training.output_dir}/best_adapter"
 
     from transformers import WhisperForConditionalGeneration
 
-    # 加载基础模型
+    # Load base model
     model_kwargs = {}
     if device == "cuda":
         model_kwargs["torch_dtype"] = torch.float16
@@ -114,7 +114,7 @@ def main():
     base_model.generation_config.task = cfg.model.task
     base_model.generation_config.forced_decoder_ids = None
 
-    # 加载 LoRA adapter
+    # Load LoRA adapter
     finetuned_model = PeftModel.from_pretrained(base_model, adapter_path)
     finetuned_model = finetuned_model.merge_and_unload()
     if device != "cuda":
@@ -127,8 +127,8 @@ def main():
     del finetuned_model
     torch.cuda.empty_cache() if device == "cuda" else None
 
-    # ── 计算指标 ─────────────────────────────────────────
-    # 标准化文本
+    # ── Compute metrics ──────────────────────────────────────────────────────
+    # Normalize text
     norm_refs = [normalizer(r) for r in references]
     norm_baseline = [normalizer(p) for p in baseline_preds]
     norm_finetuned = [normalizer(p) for p in finetuned_preds]
@@ -138,30 +138,30 @@ def main():
     finetuned_wer = jiwer.wer(norm_refs, norm_finetuned)
     finetuned_cer = jiwer.cer(norm_refs, norm_finetuned)
 
-    # ── 输出对比结果 ─────────────────────────────────────
+    # ── Print comparison results ──────────────────────────────────────────────
     print("\n")
     print("╔══════════════════════════════════════════════╗")
-    print("║         模型对比评估结果                       ║")
+    print("║         Model Comparison Results              ║")
     print("╠══════════════════════════════════════════════╣")
-    print(f"║  {'模型':<20} {'WER':>8} {'CER':>8}       ║")
+    print(f"║  {'Model':<20} {'WER':>8} {'CER':>8}       ║")
     print("╠══════════════════════════════════════════════╣")
-    print(f"║  {'Baseline (原始)':<20} {baseline_wer:>8.4f} {baseline_cer:>8.4f}       ║")
-    print(f"║  {'LoRA 微调':<20} {finetuned_wer:>8.4f} {finetuned_cer:>8.4f}       ║")
+    print(f"║  {'Baseline (original)':<20} {baseline_wer:>8.4f} {baseline_cer:>8.4f}       ║")
+    print(f"║  {'LoRA fine-tuned':<20} {finetuned_wer:>8.4f} {finetuned_cer:>8.4f}       ║")
     print("╠══════════════════════════════════════════════╣")
     wer_improve = (baseline_wer - finetuned_wer) / baseline_wer * 100 if baseline_wer > 0 else 0
     cer_improve = (baseline_cer - finetuned_cer) / baseline_cer * 100 if baseline_cer > 0 else 0
-    print(f"║  {'WER 提升':<20} {wer_improve:>+7.2f}%               ║")
-    print(f"║  {'CER 提升':<20} {cer_improve:>+7.2f}%               ║")
+    print(f"║  {'WER improvement':<20} {wer_improve:>+7.2f}%               ║")
+    print(f"║  {'CER improvement':<20} {cer_improve:>+7.2f}%               ║")
     print("╚══════════════════════════════════════════════╝")
 
-    # ── 打印部分样本对比 ─────────────────────────────────
-    print("\n📝 部分样本对比（前 5 条）：")
+    # ── Print sample comparisons ──────────────────────────────────────────────
+    print("\n📝 Sample comparisons (first 5):")
     print("─" * 80)
     for i in range(min(5, len(references))):
-        print(f"\n【样本 {i+1}】")
-        print(f"  真实文本:   {references[i][:100]}...")
-        print(f"  Baseline:   {baseline_preds[i][:100]}...")
-        print(f"  LoRA 微调:  {finetuned_preds[i][:100]}...")
+        print(f"\n[Sample {i+1}]")
+        print(f"  Reference:      {references[i][:100]}...")
+        print(f"  Baseline:       {baseline_preds[i][:100]}...")
+        print(f"  LoRA fine-tuned:{finetuned_preds[i][:100]}...")
 
 
 if __name__ == "__main__":

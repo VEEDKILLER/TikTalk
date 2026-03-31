@@ -1,23 +1,24 @@
-背景：通过LoRA微调Whipser large-v3模型，现在已经获得了微调后的文件
-文件夹路径：best_adapter/
-这个文件夹中包含了
-adapter_config.json, adapter_model.safetensors,processsor_config.json,tokenizer.json, tokenizer_config.json还有一个README文件。
-这些是微调之后的产出。
-微调过程见FineTuneInstructions.md文件，这个文件包含了微调过程中使用的方法和技术比如Rank，Alpha，Dropout，使用了fp16
+Background: The Whisper large-v3 model has been fine-tuned with LoRA and the fine-tuned files are now available.
+Folder path: best_adapter/
+This folder contains:
+adapter_config.json, adapter_model.safetensors, processor_config.json, tokenizer.json, tokenizer_config.json, and a README file.
+These are the outputs produced by fine-tuning.
+The fine-tuning process is documented in FineTuneInstruction.md, which covers the methods and techniques used, such as Rank, Alpha, Dropout, and FP16.
 
-在训练结束后，在机器进行简单的评估，小组认为微调后wer下降明显，效果足够好
+After training, a quick evaluation was run on the machine. The team determined that the WER decreased noticeably after fine-tuning and the results are good enough.
 
-任务：目前需要对其进行部署在云端的服务器中。经过挑选，决定使用Modal作为服务商，进行ASR模型的推理，并使用T4的GPU
+Task: The model now needs to be deployed on a cloud server. After evaluation, Modal has been selected as the service provider for ASR model inference, using a T4 GPU.
 
-需要做的步骤：
-1. 合并权重：需要将Whisper large v3模型和最终训练的LoRA微调参数进行合并。
-2. 使用faster-whisper框架，并且需要做到推理的速度要快，
+Steps required:
+1. Merge weights: merge the Whisper large-v3 base model with the final trained LoRA fine-tuning parameters.
+2. Use the faster-whisper framework and ensure fast inference speed.
 
-Python环境：使用uv来管理虚拟环境，目前已进行`uv init`操作。但是未安装任何依赖。目前未安装Modal，未进行Modal设置
+Python environment: uv is used to manage the virtual environment. `uv init` has already been run, but no dependencies have been installed yet. Modal is not installed and Modal setup has not been performed.
 
-传输的数据：在最终的项目，将会进行文件传输，有可能传输mp3文件或者wav文件，接收转录后的文本。
+Data transfer: In the final project, file transfers will occur — likely MP3 or WAV files — and the service should return the transcribed text.
 
-小幅测试：会使用postman进行发送数据看是否能够正常运作
-完成代码后需要做一个文档，内容为：
-1. 流程说明，我知道如何利用命令行一步一步部署在Modal上
-2. 代码结构是如何，里面用了什么超参数？
+Testing: Postman will be used to send data and verify that the service works correctly.
+
+After completing the code, a document is needed that covers:
+1. Deployment walkthrough: step-by-step instructions for deploying to Modal via the command line
+2. Code structure: what the code does and what hyperparameters are used

@@ -1,82 +1,82 @@
 # TikTalk ASR Cloud Deployment Guide
 
-本文档说明如何将 LoRA 微调后的 Whisper large-v3 模型部署到 Modal 云平台。
+This document explains how to deploy the LoRA fine-tuned Whisper large-v3 model to the Modal cloud platform.
 
 ---
 
-## 1. 项目代码结构
+## 1. Project Code Structure
 
 ```
 tiktalk_asr_cloud_deploy/
-├── best_adapter/              # LoRA 微调产出文件
-│   ├── adapter_config.json    # LoRA 配置 (r=16, alpha=32, dropout=0.05)
-│   ├── adapter_model.safetensors  # LoRA 权重文件
-│   ├── processor_config.json  # Whisper processor 配置
-│   ├── tokenizer.json         # Tokenizer 词表
-│   └── tokenizer_config.json  # Tokenizer 配置
-├── merge_and_convert.py       # 本地脚本：合并权重 + 转换格式
-├── serve.py                   # Modal 部署脚本：推理服务
-├── pyproject.toml             # Python 依赖声明
-├── DEPLOYMENT.md              # 本文档
-├── FineTuneInstruction.md     # 微调过程记录
-└── project_document.md        # 项目需求文档
+├── best_adapter/              # LoRA fine-tuning output files
+│   ├── adapter_config.json    # LoRA config (r=16, alpha=32, dropout=0.05)
+│   ├── adapter_model.safetensors  # LoRA weights
+│   ├── processor_config.json  # Whisper processor config
+│   ├── tokenizer.json         # Tokenizer vocabulary
+│   └── tokenizer_config.json  # Tokenizer config
+├── merge_and_convert.py       # Local script: merge weights + convert format
+├── serve.py                   # Modal deployment script: inference service
+├── pyproject.toml             # Python dependency declarations
+├── DEPLOYMENT.md              # This document
+├── FineTuneInstruction.md     # Fine-tuning process notes
+└── project_document.md        # Project requirements document
 ```
 
-### 生成的目录（不提交到 Git）
+### Generated directories (not committed to Git)
 
-| 目录            | 说明                                         |
-| --------------- | -------------------------------------------- |
-| `merged_model/` | 合并 LoRA 权重后的完整 Whisper large-v3 模型 |
-| `ct2_model/`    | CTranslate2 格式模型，供 faster-whisper 使用 |
+| Directory       | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
+| `merged_model/` | Full Whisper large-v3 model after merging LoRA weights       |
+| `ct2_model/`    | CTranslate2 format model, used by faster-whisper             |
 
 ---
 
-## 2. 代码说明
+## 2. Code Overview
 
-### 2.1 `merge_and_convert.py` — 权重合并与格式转换
+### 2.1 `merge_and_convert.py` — Weight merging and format conversion
 
-**作用**：在本地完成两步操作，为部署做准备。
+**Purpose**: completes two steps locally to prepare for deployment.
 
-| 步骤        | 操作                                        | 核心技术                          |
-| ----------- | ------------------------------------------- | --------------------------------- |
-| Step 1 合并 | 加载 whisper-large-v3 + LoRA adapter → 合并 | PEFT `merge_and_unload()`         |
-| Step 2 转换 | 将合并模型转为 CTranslate2 格式             | `ct2-transformers-converter` CLI  |
+| Step          | Operation                                              | Key technology                    |
+| ------------- | ------------------------------------------------------ | --------------------------------- |
+| Step 1 Merge  | Load whisper-large-v3 + LoRA adapter → merge           | PEFT `merge_and_unload()`         |
+| Step 2 Convert| Convert merged model to CTranslate2 format             | `ct2-transformers-converter` CLI  |
 
-**关键参数**：
+**Key parameters**:
 
-- **CTranslate2 量化**：`float16` — 保持推理精度的同时减少模型大小
+- **CTranslate2 quantization**: `float16` — reduces model size while preserving inference precision
 
-### 2.2 `serve.py` — Modal 推理服务
+### 2.2 `serve.py` — Modal inference service
 
-**作用**：定义 Modal 应用，在云端 T4 GPU 上运行 faster-whisper 推理。
+**Purpose**: defines the Modal app and runs faster-whisper inference on a T4 GPU in the cloud.
 
-#### 推理超参数
+#### Inference hyperparameters
 
-| 参数           | 值       | 说明                                       |
-| -------------- | -------- | ------------------------------------------ |
-| `beam_size`    | 5        | Beam search 宽度，越大越精确但越慢         |
-| `language`     | `"en"`   | 目标语言（英语，儿童语音）                 |
-| `vad_filter`   | `True`   | 启用语音活动检测，自动跳过静音段           |
-| `min_silence_duration_ms` | 500 | VAD 最小静音时长（毫秒）           |
-| `compute_type` | `float16`| GPU 推理精度                               |
+| Parameter      | Value    | Description                                             |
+| -------------- | -------- | ------------------------------------------------------- |
+| `beam_size`    | 5        | Beam search width — higher is more accurate but slower  |
+| `language`     | `"en"`   | Target language (English, child speech)                 |
+| `vad_filter`   | `True`   | Enable Voice Activity Detection to skip silence         |
+| `min_silence_duration_ms` | 500 | Minimum silence duration for VAD split (ms)       |
+| `compute_type` | `float16`| GPU inference precision                                 |
 
-#### Modal 资源配置
+#### Modal resource configuration
 
-| 参数                      | 值    | 说明                     |
-| ------------------------- | ----- | ------------------------ |
-| `gpu`                     | `T4`  | 使用 T4 GPU              |
-| `timeout`                 | 300s  | 单次请求超时             |
-| `container_idle_timeout`  | 120s  | 容器空闲超时后自动关闭   |
-| `allow_concurrent_inputs` | 5     | 允许并发请求数           |
+| Parameter                 | Value | Description                              |
+| ------------------------- | ----- | ---------------------------------------- |
+| `gpu`                     | `T4`  | Use T4 GPU                               |
+| `timeout`                 | 300s  | Per-request timeout                      |
+| `container_idle_timeout`  | 120s  | Auto-shutdown after container idle       |
+| `allow_concurrent_inputs` | 5     | Max concurrent requests                  |
 
-#### API 接口
+#### API endpoint
 
 - **Method**: POST
 - **Content-Type**: `multipart/form-data`
-- **字段名**: `audio`
-- **支持格式**: `.wav`, `.mp3`, `.m4a`, `.flac`, `.ogg`, `.webm`
+- **Field name**: `audio`
+- **Supported formats**: `.wav`, `.mp3`, `.m4a`, `.flac`, `.ogg`, `.webm`
 
-**响应示例**：
+**Response example**:
 
 ```json
 {
@@ -93,93 +93,93 @@ tiktalk_asr_cloud_deploy/
 
 ---
 
-## 3. 部署流程（命令行步骤）
+## 3. Deployment Steps (command-line)
 
-### 前提条件
+### Prerequisites
 
-- 已安装 [uv](https://docs.astral.sh/uv/)
-- 已注册 [Modal](https://modal.com/) 账号
-- `best_adapter/` 目录中包含微调后的 LoRA 文件
+- [uv](https://docs.astral.sh/uv/) installed
+- [Modal](https://modal.com/) account registered
+- Fine-tuned LoRA files present in `best_adapter/`
 
-### Step 1: 安装依赖
+### Step 1: Install dependencies
 
 ```bash
 uv sync
 ```
 
-### Step 2: 设置 Modal
+### Step 2: Set up Modal
 
-注册/登录 Modal 后，运行：
+After registering/logging in to Modal, run:
 
 ```bash
 uv run modal setup
 ```
 
-按提示在浏览器中完成认证。
+Follow the prompt to complete authentication in your browser.
 
-### Step 3: 合并权重并转换格式
+### Step 3: Merge weights and convert format
 
 ```bash
 uv run python merge_and_convert.py
 ```
 
-这一步会：
-1. 从 Hugging Face 下载 `openai/whisper-large-v3` 基座模型（~6GB，首次运行）
-2. 合并 LoRA 权重 → 输出到 `merged_model/`
-3. 转换为 CTranslate2 格式 → 输出到 `ct2_model/`
+This will:
+1. Download `openai/whisper-large-v3` base model from Hugging Face (~6GB, first run only)
+2. Merge LoRA weights → output to `merged_model/`
+3. Convert to CTranslate2 format → output to `ct2_model/`
 
-> ⏱️ 首次运行可能需要 10-20 分钟（取决于网络和硬件）
+> ⏱️ First run may take 10–20 minutes (depending on network and hardware)
 
-### Step 4: 上传模型到 Modal Volume
+### Step 4: Upload model to Modal Volume
 
 ```bash
 uv run modal volume create tiktalk-asr-model
 uv run modal volume put tiktalk-asr-model ct2_model/ /
 ```
 
-### Step 5: 部署到 Modal
+### Step 5: Deploy to Modal
 
 ```bash
 uv run modal deploy serve.py
 ```
 
-部署成功后会输出 Web endpoint URL，格式类似：
+After successful deployment, a web endpoint URL will be printed, in the format:
 ```
 https://your-workspace--tiktalk-asr-transcribe-endpoint.modal.run
 ```
 
-### Step 6（开发模式，可选）: 热重载调试
+### Step 6 (Development mode, optional): Hot-reload debugging
 
 ```bash
 uv run modal serve serve.py
 ```
 
-这会启动一个临时 endpoint，代码修改后自动重新部署。
+This starts a temporary endpoint that auto-redeploys on code changes.
 
 ---
 
-## 4. Postman 测试
+## 4. Postman Testing
 
-1. 打开 Postman，创建新请求
-2. 方法选择 **POST**
-3. URL 填入 Modal 部署后输出的 endpoint URL
-4. 切换到 **Body** tab → 选择 **form-data**
-5. 添加一个字段：
-   - **Key**: `audio`（类型选择 **File**）
-   - **Value**: 选择本地的 `.wav` 或 `.mp3` 文件
-6. 点击 **Send**
-7. 查看返回的 JSON，包含 `text`（完整转录）和 `segments`（分段转录+时间戳）
+1. Open Postman and create a new request
+2. Set method to **POST**
+3. Enter the Modal endpoint URL in the URL field
+4. Switch to the **Body** tab → select **form-data**
+5. Add a field:
+   - **Key**: `audio` (set type to **File**)
+   - **Value**: select a local `.wav` or `.mp3` file
+6. Click **Send**
+7. Inspect the returned JSON, which contains `text` (full transcript) and `segments` (per-segment transcription with timestamps)
 
 ---
 
-## 5. 常用 Modal 命令
+## 5. Common Modal Commands
 
-| 命令                                    | 说明                       |
-| --------------------------------------- | -------------------------- |
-| `modal deploy serve.py`                 | 部署（生产模式）           |
-| `modal serve serve.py`                  | 开发调试模式               |
-| `modal app list`                        | 查看已部署的应用           |
-| `modal app stop tiktalk-asr`            | 停止应用                   |
-| `modal volume ls tiktalk-asr-model`     | 查看 Volume 中的文件       |
-| `modal volume put tiktalk-asr-model ct2_model/ /` | 上传模型到 Volume |
-| `modal volume delete tiktalk-asr-model` | 删除 Volume（慎用）        |
+| Command                                             | Description                      |
+| --------------------------------------------------- | -------------------------------- |
+| `modal deploy serve.py`                             | Deploy (production mode)         |
+| `modal serve serve.py`                              | Development / debug mode         |
+| `modal app list`                                    | List deployed apps               |
+| `modal app stop tiktalk-asr`                        | Stop the app                     |
+| `modal volume ls tiktalk-asr-model`                 | List files in the Volume         |
+| `modal volume put tiktalk-asr-model ct2_model/ /`   | Upload model to Volume           |
+| `modal volume delete tiktalk-asr-model`             | Delete Volume (use with caution) |

@@ -1,0 +1,16 @@
+[project]
+name = "tiktalk-asr"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "faster-whisper>=1.2.1",
+    "librosa>=0.11.0",
+    "pandas>=3.0.1",
+    "pydub>=0.25.1",
+    "pylangacq>=0.20.0",
+    "soundfile>=0.13.1",
+    "stable-ts>=2.19.1",
+    "tqdm>=4.67.3",
+]

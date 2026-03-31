@@ -1,5 +1,5 @@
 """
-模型加载模块 —— Whisper 模型加载、量化、LoRA 应用。
+Model loading module —— Whisper model loading, quantization, and LoRA application.
 """
 
 from transformers import WhisperForConditionalGeneration, WhisperProcessor
@@ -8,7 +8,7 @@ from config import ProjectConfig
 
 
 def load_processor(cfg: ProjectConfig) -> WhisperProcessor:
-    """加载 WhisperProcessor（feature_extractor + tokenizer）"""
+    """Load WhisperProcessor (feature_extractor + tokenizer)"""
     processor = WhisperProcessor.from_pretrained(
         cfg.model.model_name,
         language=cfg.model.language,
@@ -19,9 +19,9 @@ def load_processor(cfg: ProjectConfig) -> WhisperProcessor:
 
 def load_model_for_training(cfg: ProjectConfig) -> WhisperForConditionalGeneration:
     """
-    加载用于 LoRA 微调的 Whisper 模型。
-    - CUDA：启用 bitsandbytes 4-bit 量化 + prepare_model_for_kbit_training + LoRA
-    - MPS/CPU：直接加载 + LoRA（无量化）
+    Load the Whisper model for LoRA fine-tuning.
+    - CUDA: enables bitsandbytes 4-bit quantization + prepare_model_for_kbit_training + LoRA
+    - MPS/CPU: loads directly + LoRA (no quantization)
     """
     model_kwargs = {}
 
@@ -39,7 +39,7 @@ def load_model_for_training(cfg: ProjectConfig) -> WhisperForConditionalGenerati
         model_kwargs["device_map"] = "auto"
     else:
         import torch
-        # MPS/CPU: 显式指定 float32 避免 whisper-large-v3 默认的 fp16 导致 dtype 不匹配
+        # MPS/CPU: explicitly specify float32 to avoid dtype mismatch caused by whisper-large-v3's default fp16
         model_kwargs["torch_dtype"] = torch.float32
         model_kwargs["device_map"] = None
 
@@ -48,17 +48,17 @@ def load_model_for_training(cfg: ProjectConfig) -> WhisperForConditionalGenerati
         **model_kwargs,
     )
 
-    # 设置 generation config
+    # Set generation config
     model.generation_config.language = cfg.model.language
     model.generation_config.task = cfg.model.task
     model.generation_config.forced_decoder_ids = None
 
-    # CUDA 上先 prepare_model_for_kbit_training，再应用 LoRA
+    # On CUDA, first run prepare_model_for_kbit_training, then apply LoRA
     if cfg.use_quantization:
         from peft import prepare_model_for_kbit_training
         model = prepare_model_for_kbit_training(model)
 
-    # 应用 LoRA
+    # Apply LoRA
     from peft import LoraConfig, get_peft_model
 
     lora_config = LoraConfig(
@@ -76,15 +76,15 @@ def load_model_for_training(cfg: ProjectConfig) -> WhisperForConditionalGenerati
 
 def load_baseline_model(cfg: ProjectConfig) -> WhisperForConditionalGeneration:
     """
-    加载 baseline 模型（无 LoRA、无量化或按需低精度加载）。
-    用于评估对比。
+    Load the baseline model (no LoRA, no quantization, or low-precision loading as needed).
+    Used for evaluation comparison.
     """
     import torch
 
     model_kwargs = {}
 
     if cfg.device == "cuda":
-        # 在 3080Ti 16G 上，允许以 FP16 或 8-bit 加载以避免 OOM
+        # On 3080Ti 16GB, allow loading in FP16 or 8-bit to avoid OOM
         model_kwargs["torch_dtype"] = torch.float16
         model_kwargs["device_map"] = "auto"
     else:
@@ -95,7 +95,7 @@ def load_baseline_model(cfg: ProjectConfig) -> WhisperForConditionalGeneration:
         **model_kwargs,
     )
 
-    # 设置 generation config
+    # Set generation config
     model.generation_config.language = cfg.model.language
     model.generation_config.task = cfg.model.task
     model.generation_config.forced_decoder_ids = None

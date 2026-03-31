@@ -38,8 +38,8 @@ image = (
         "faster-whisper>=1.1.0",
         "fastapi[standard]",
         "python-multipart",
-        "nvidia-cublas-cu12", # 显式安装所需的库
-        "nvidia-cudnn-cu12"   # 显式安装所需的库
+        "nvidia-cublas-cu12", # Explicitly install required libraries
+        "nvidia-cudnn-cu12"   # Explicitly install required libraries
     )
     .env({
         "LD_LIBRARY_PATH": "/usr/local/lib/python3.12/site-packages/nvidia/cublas/lib:/usr/local/lib/python3.12/site-packages/nvidia/cudnn/lib"

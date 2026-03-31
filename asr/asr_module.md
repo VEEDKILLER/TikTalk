@@ -1,0 +1,11 @@
+asr的模块的主要代码分为数据预处理代码、训练代码和部署代码。
+代码结构为：
+data_preprocessing_src数据预处理代码
+training_src训练代码
+deployment_src部署代码
+
+asr模块的训练代码主要使用了whisper v3 large模型，然后通过LoRA进行微调
+训练的数据集来源：https://talkbank.org/childes/access/Eng-NA/OCSC.html
+1. 在训练之前，需要对数据集中的语音进行切割等预处理。将数据集下载完成后放入data_preprocessing_src的dataset_orig文件夹中，然后根据commamd.md的步骤进行一步步清洗和整理。处理完毕后的数据在clean_dataset中。
+2. 将clean_dataset中的数据集放入training_src的dataset文件夹中，然后进行训练
+3. 将训练后的results/whisper-lora/best_adapter复制到deployment_src中，然后根据DEPLOYMENT.md的说明进行部署
