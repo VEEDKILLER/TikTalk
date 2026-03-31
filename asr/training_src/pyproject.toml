@@ -1,0 +1,18 @@
+[project]
+name = "tiktalk-asr"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.13.0",
+    "datasets>=4.6.1",
+    "evaluate>=0.4.6",
+    "jiwer>=4.0.0",
+    "peft>=0.18.1",
+    "soundfile>=0.13.1",
+    "tensorboard>=2.20.0",
+    "torch>=2.10.0",
+    "tqdm>=4.67.3",
+    "transformers>=5.3.0",
+]
