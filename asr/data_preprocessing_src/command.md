@@ -1,6 +1,6 @@
-# Step 1: 已完成 (preprocess.py 已处理全部 303 个 CHA)
+# Step 1: Completed (preprocess.py has processed all 303 CHA files)
 uv run python preprocess.py
-# Step 2: 对齐全部音频 (预计 ~303 × 3min ≈ 15 小时)
+# Step 2: Align all audio files (estimated ~303 × 3 min ≈ 15 hours)
 uv run python align.py
-# Step 3: 构建最终数据集
+# Step 3: Construct final dataset
 uv run python build_dataset.py

@@ -1,21 +1,21 @@
-这是一个对数据集进行预处理的项目
-项目的最终目标：为 Whisper 模型的 LoRA 微调提供干净、标准化的训练数据。重点优化模型对儿童语言（发音特征、特殊停顿等）的语音识别能力。
-此项目的目标：预处理数据集达到微调可用
+This project preprocesses the dataset.
+Final goal: provide clean, standardized training data for LoRA fine-tuning of the Whisper model, with a focus on improving speech recognition of child language (pronunciation patterns, special pauses, etc.).
+Objective of this project: preprocess the dataset to a state ready for fine-tuning.
 
-目前的数据集路径框架：
-* **音频文件夹**: `dataset_orig/4`, `5`, `6`, `7`, `8`, `9` (按组别存放)
-    * *示例*: `dataset_orig/4/4001.mp3`
-    * *参数*: 大小 20-40MB，采样率 44.1 kHz，时长 ~20 分钟/个。
-* **标签文本文件夹**: `dataset_orig/OCSC`
-    * *示例*: `OCSC/4/4001.cha` (与音频文件一一对应)
-    * *包含角色*: `CHI` (Target_Child，目标儿童)，`EXP` (Investigator，老师/调查员)。
-    * *其他文件*: 包含 `0types.txt`, `0metadata.cdc` 等 TalkBank 附带的元数据文件（暂不处理）。
+Current dataset directory structure:
+* **Audio folder**: `dataset_orig/4`, `5`, `6`, `7`, `8`, `9` (organized by group)
+    * *Example*: `dataset_orig/4/4001.mp3`
+    * *Properties*: size 20–40 MB, sample rate 44.1 kHz, duration ~20 minutes each.
+* **Transcript label folder**: `dataset_orig/OCSC`
+    * *Example*: `OCSC/4/4001.cha` (one-to-one correspondence with audio files)
+    * *Speakers*: `CHI` (Target_Child), `EXP` (Investigator/teacher).
+    * *Other files*: includes TalkBank metadata files such as `0types.txt`, `0metadata.cdc` (not processed for now).
 
 
-音频文件不符合whisper微调的格式要求，需要进行预处理，且cha文件中无时间戳信息
+The audio files do not meet Whisper fine-tuning format requirements and must be preprocessed. The .cha files also contain no timestamp information.
 
-通过文本编辑打开cha文件，预览信息：
-‘’‘
+Opening a .cha file in a text editor shows:
+'''
 @UTF8
 @PID:	11312/a-00075513-1
 @Begin
@@ -57,26 +57,26 @@
 %mor:	adv|so cm|cm intj|im adv|gonna adv|first verb|introduce-Inf-S pron|you-Prs-Acc-S2 adp|to pron|our-Prs-Gen-P1 noun|friend adv|here .
 %gra:	1|6|DISCOURSE 2|1|PUNCT 3|6|DISCOURSE 4|6|ADVMOD 5|6|ADVMOD 6|0|ROOT 7|6|OBJ 8|10|CASE 9|10|NMOD-POSS 10|6|OBL 11|6|ADVMOD 12|6|PUNCT
 *EXP:	let's let them introduce themselves .
-’‘’
+'''
 
-需要进行的步骤：
-1. 本数据集来源于TalkBank网站，需要进行预处理
-2. 根据其转录信息删除特殊符号等内容：
-3. 使用stable-ts进行大模型对齐，将cha文件中和原始音频进行对齐，得到时间戳。使用的模型框架：faster-whisper，并且使用medium模型。将清洗后的文本与长音频进行毫秒级对齐，获取每句话的精确时间戳。
-4. 为了符合whisper微调的格式，需要进行转化，变成一个结构极其简单、跨平台通用的 Hugging Face AudioFolder 格式。（16000Hz, 单声道，且切片时长控制在 30 秒以内）
-5. 最后的输出在clean_dataset文件夹中,并且不再区分4，5，6，7，8，9文件夹，统一在metadata.csv中显示file_name（写相对路径）和transcription，clean_dataset/audio/中存储音频文件
+Required steps:
+1. This dataset originates from the TalkBank website and must be preprocessed.
+2. Remove special symbols and other artifacts based on the transcript content.
+3. Use stable-ts for large-model alignment: align the cleaned text from the .cha files with the original audio at millisecond precision to obtain timestamps. Framework used: faster-whisper with the medium model. Each cleaned transcript is aligned against the full-length audio to get precise per-utterance timestamps.
+4. To comply with Whisper fine-tuning format requirements, convert to the simple, cross-platform HuggingFace AudioFolder format (16000 Hz, mono, segments no longer than 30 seconds).
+5. Final output goes into the `clean_dataset/` folder. The group subdirectories (4, 5, 6, 7, 8, 9) are no longer used; everything is unified in `metadata.csv` with `file_name` (relative path) and `transcription` columns. Audio files are stored in `clean_dataset/audio/`.
 
-环境依赖管理：使用uv进行管理，ffmpeg已经安装在此mac设备的brew中
-可能涉及到的依赖已经成功通过uv安装：
+Environment management: uv is used; ffmpeg is already installed via Homebrew on this Mac.
+Dependencies successfully installed via uv:
 pylangacq pydub librosa soundfile pandas tqdm stable-ts faster-whisper
 
 
-数据集网站上其他存在的信息：
-Within each transcript, tasks are marked with Gem codes (@G) as specified below. In addition, when social chit-chat at the end of the session was included, it is marked with the code @G: EndTasks. In addition, we have included on this site three cut documents for special words found in our transcripts: (1) OCSC_lofreq includes low frequency words that were used by children in this task; (2) OCSC_wugs includes the nonsense words used in the Wug task; (3) OCSC_comm includes our specific “communicator” conventions, used for transcribing children sounding out letters in the alphabet task.
+Additional information from the dataset website:
+Within each transcript, tasks are marked with Gem codes (@G) as specified below. In addition, when social chit-chat at the end of the session was included, it is marked with the code @G: EndTasks. In addition, we have included on this site three cut documents for special words found in our transcripts: (1) OCSC_lofreq includes low frequency words that were used by children in this task; (2) OCSC_wugs includes the nonsense words used in the Wug task; (3) OCSC_comm includes our specific "communicator" conventions, used for transcribing children sounding out letters in the alphabet task.
 
-Alphabet (@G: Alphabet)：Children were shown 26 cards (in alphabetical order), each containing a capital letter, a word starting with that letter and a picture of the word. Children were asked to name the letter and the picture, and to think of another word that started with the same letter. Children who were having difficulties with letter naming were not pressured to name the picture or provide another word that started with the same letter.
+Alphabet (@G: Alphabet): Children were shown 26 cards (in alphabetical order), each containing a capital letter, a word starting with that letter and a picture of the word. Children were asked to name the letter and the picture, and to think of another word that started with the same letter. Children who were having difficulties with letter naming were not pressured to name the picture or provide another word that started with the same letter.
 Numbers (@G: Numbers)
-Wug Task (@G: Wug)：Children were run through a version of the classic Wug task (Berko, 1958) focusing exclusively on plural morphology. Children were asked to produce the plural forms for 10 common words.
+Wug Task (@G: Wug): Children were run through a version of the classic Wug task (Berko, 1958) focusing exclusively on plural morphology. Children were asked to produce the plural forms for 10 common words.
 Experimental Pictures (@G: ExpPictures)
 Reading Passage (@G: Reading)
 How To Task (@G: Howto)

@@ -1,14 +1,14 @@
 """
-Step 3: 音频切片与 HuggingFace AudioFolder 数据集构建
-根据对齐结果，切割音频为短片段，转换格式，生成 HuggingFace AudioFolder 数据集。
+Step 3: Audio slicing and HuggingFace AudioFolder dataset construction
+Based on alignment results, slice audio into short segments, convert format, and generate a HuggingFace AudioFolder dataset.
 
-输出:
+Output:
   clean_dataset/audio/{id}_{seg_idx:03d}.wav
   clean_dataset/metadata.csv
 
-用法:
-  uv run python build_dataset.py          # 处理全部文件
-  uv run python build_dataset.py --test   # 仅处理第一个文件（测试）
+Usage:
+  uv run python build_dataset.py          # Process all files
+  uv run python build_dataset.py --test   # Process only the first file (test mode)
 """
 
 import csv
@@ -21,12 +21,12 @@ import soundfile as sf
 from tqdm import tqdm
 
 
-# ── 参数 ──────────────────────────────────────────────────────
-MAX_SEGMENT_DURATION = 30.0   # 每个切片最大时长 (秒)
-TARGET_SR = 16000             # Whisper 要求 16kHz
-MIN_SEGMENT_DURATION = 0.1    # 过滤过短的 segment
+# ── Parameters ───────────────────────────────────────────────
+MAX_SEGMENT_DURATION = 30.0   # Maximum duration per slice (seconds)
+TARGET_SR = 16000             # Whisper requires 16 kHz
+MIN_SEGMENT_DURATION = 0.1    # Filter out segments shorter than this
 
-# ── 项目路径 ──────────────────────────────────────────────────
+# ── Project paths ─────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
 DATASET_DIR = BASE_DIR / "dataset_orig"
 OCSC_DIR = DATASET_DIR / "OCSC"
@@ -37,10 +37,10 @@ GROUPS = ["4", "5", "6", "7", "8", "9"]
 
 def merge_segments(segments: list[dict], max_duration: float) -> list[dict]:
     """
-    合并连续 segments，使每个合并后的切片时长 ≤ max_duration。
-    过滤零时长或过短的 segment。
+    Merge consecutive segments so that each merged slice duration ≤ max_duration.
+    Filters out zero-duration or too-short segments.
     """
-    # 先过滤掉无效 segment
+    # Filter out invalid segments first
     valid_segments = [
         s for s in segments
         if (s["end"] - s["start"]) >= MIN_SEGMENT_DURATION
@@ -60,11 +60,11 @@ def merge_segments(segments: list[dict], max_duration: float) -> list[dict]:
     for seg in valid_segments[1:]:
         potential_duration = seg["end"] - current["start"]
         if potential_duration <= max_duration:
-            # 可以合并
+            # Can merge
             current["end"] = seg["end"]
             current["text"] += " " + seg["text"]
         else:
-            # 不能合并，保存当前并开始新的
+            # Cannot merge; save current and start a new one
             merged.append(current)
             current = {
                 "start": seg["start"],
@@ -72,7 +72,7 @@ def merge_segments(segments: list[dict], max_duration: float) -> list[dict]:
                 "text": seg["text"],
             }
 
-    # 最后一个
+    # Append the last segment
     merged.append(current)
 
     return merged
@@ -84,19 +84,19 @@ def process_single_file(
     file_id: str,
 ) -> list[dict]:
     """
-    处理单个音频文件：切割、转码、保存。
-    返回 metadata 条目列表。
+    Process a single audio file: slice, transcode, and save.
+    Returns a list of metadata entries.
     """
-    # 加载对齐结果
+    # Load alignment result
     with open(aligned_json_path, "r", encoding="utf-8") as f:
         segments = json.load(f)
 
-    # 合并 segments
+    # Merge segments
     merged = merge_segments(segments, MAX_SEGMENT_DURATION)
     if not merged:
         return []
 
-    # 加载完整音频 (转为 16kHz 单声道)
+    # Load full audio (resample to 16 kHz mono)
     audio, sr = librosa.load(str(audio_path), sr=TARGET_SR, mono=True)
 
     metadata_entries = []
@@ -104,19 +104,19 @@ def process_single_file(
         start_sample = int(seg["start"] * TARGET_SR)
         end_sample = int(seg["end"] * TARGET_SR)
 
-        # 防越界
+        # Guard against out-of-bounds
         end_sample = min(end_sample, len(audio))
         if start_sample >= end_sample:
             continue
 
         chunk = audio[start_sample:end_sample]
 
-        # 验证时长
+        # Validate duration
         duration = len(chunk) / TARGET_SR
         if duration < MIN_SEGMENT_DURATION:
             continue
 
-        # 保存 WAV
+        # Save WAV
         wav_filename = f"{file_id}_{idx:03d}.wav"
         wav_path = AUDIO_OUTPUT_DIR / wav_filename
         sf.write(str(wav_path), chunk, TARGET_SR)
@@ -131,8 +131,8 @@ def process_single_file(
 
 def get_completed_file_ids() -> set[str]:
     """
-    从已有的 metadata.csv 中读取已完成的 file_id 集合。
-    通过 file_name 列（如 audio/4001_000.wav）提取 file_id（如 4001）。
+    Read the set of already-completed file_ids from an existing metadata.csv.
+    Extracts file_id (e.g. 4001) from the file_name column (e.g. audio/4001_000.wav).
     """
     csv_path = OUTPUT_DIR / "metadata.csv"
     if not csv_path.exists():
@@ -151,8 +151,8 @@ def get_completed_file_ids() -> set[str]:
 
 def append_metadata(entries: list[dict], write_header: bool = False):
     """
-    将 metadata 条目追加写入 metadata.csv。
-    仅在文件不存在时写入表头。
+    Append metadata entries to metadata.csv.
+    Writes the header only when the file does not yet exist.
     """
     csv_path = OUTPUT_DIR / "metadata.csv"
     mode = "a" if csv_path.exists() and not write_header else "w"
@@ -164,17 +164,17 @@ def append_metadata(entries: list[dict], write_header: bool = False):
 
 
 def process_all(test_mode: bool = False):
-    """处理所有（或第一个）对齐后的文件，支持断点续传。"""
+    """Process all (or just the first) aligned files, with resume support."""
 
-    # 确保输出目录存在
+    # Ensure output directories exist
     AUDIO_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 获取已完成的 file_id
+    # Get already-completed file_ids
     completed_ids = get_completed_file_ids()
     if completed_ids:
-        print(f"已完成 {len(completed_ids)} 个文件，将自动跳过")
+        print(f"{len(completed_ids)} files already completed, will be skipped automatically")
 
-    # 收集所有待处理的文件
+    # Collect all files to process
     tasks = []
     for group in GROUPS:
         group_dir = OCSC_DIR / group
@@ -182,46 +182,46 @@ def process_all(test_mode: bool = False):
             continue
         for aligned_path in sorted(group_dir.glob("*_aligned.json")):
             file_id = aligned_path.stem.replace("_aligned", "")
-            # 跳过已处理的文件
+            # Skip already-processed files
             if file_id in completed_ids:
                 continue
             audio_path = DATASET_DIR / group / f"{file_id}.mp3"
             if not audio_path.exists():
-                print(f"  ⚠ 跳过 {file_id}: 未找到对应音频")
+                print(f"  ⚠ Skipping {file_id}: no corresponding audio found")
                 continue
             tasks.append((audio_path, aligned_path, file_id))
 
     if not tasks:
-        print("所有文件已处理完成，无需重新处理。")
+        print("All files already processed. Nothing to do.")
         return
 
     if test_mode:
         tasks = tasks[:1]
-        print(f"[测试模式] 仅处理: {tasks[0][2]}")
+        print(f"[Test mode] Processing only: {tasks[0][2]}")
 
-    print(f"待处理文件: {len(tasks)} 个")
+    print(f"Files to process: {len(tasks)}")
 
-    # 如果 metadata.csv 不存在，先写入表头
+    # Write header first if metadata.csv does not exist yet
     csv_path = OUTPUT_DIR / "metadata.csv"
     need_header = not csv_path.exists()
     if need_header:
         append_metadata([], write_header=True)
 
     total_slices = 0
-    for audio_path, aligned_path, file_id in tqdm(tasks, desc="构建数据集"):
+    for audio_path, aligned_path, file_id in tqdm(tasks, desc="Building dataset"):
         try:
             entries = process_single_file(audio_path, aligned_path, file_id)
-            # 每处理完一个文件就追加写入 metadata.csv（断点续传的关键）
+            # Append to metadata.csv after each file (key to resume support)
             if entries:
                 append_metadata(entries)
                 total_slices += len(entries)
         except Exception as e:
-            print(f"\n  ✗ 处理失败 {file_id}: {e}")
+            print(f"\n  ✗ Processing failed for {file_id}: {e}")
             continue
 
-    print(f"\n构建完成!")
-    print(f"  本次新增切片: {total_slices}")
-    print(f"  输出目录: {OUTPUT_DIR}")
+    print(f"\nBuild complete!")
+    print(f"  New slices added this run: {total_slices}")
+    print(f"  Output Directory: {OUTPUT_DIR}")
     print(f"  metadata: {csv_path}")
 
 
