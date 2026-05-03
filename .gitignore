@@ -1,0 +1,18 @@
+.DS_Store
+.claude/
+
+# Node / frontend
+node_modules/
+dist/
+
+# Python / backend
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local environment files
+.env
+.env.*
+!.env.example
