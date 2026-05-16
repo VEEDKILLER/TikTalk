@@ -1,0 +1,61 @@
+
+🔧 评估设备: cuda  |  模型: Qwen/Qwen3-ASR-1.7B
+   过滤后保留 9173 条有效样本（音频文件存在）
+   测试集: 918 条
+
+═══════════════════════════════════════════
+📊 Baseline — Qwen/Qwen3-ASR-1.7B
+═══════════════════════════════════════════
+
+═══════════════════════════════════════════
+📊 LoRA 微调 — Qwen/Qwen3-ASR-1.7B
+═══════════════════════════════════════════
+
+
+╔══════════════════════════════════════════════════════╗
+║  Qwen/Qwen3-ASR-1.7B                               ║
+╠══════════════════════════════════════════════════════╣
+║  模型变体                  WER      CER     RTFx       ║
+╠══════════════════════════════════════════════════════╣
+║  Baseline          2.5249  2.2693    5.87       ║
+║  LoRA 微调           0.9368  0.8843   10.50       ║
+╠══════════════════════════════════════════════════════╣
+║  WER 提升           +62.90%                           ║
+║  CER 提升           +61.03%                           ║
+╠══════════════════════════════════════════════════════╣
+╚══════════════════════════════════════════════════════╝
+
+📝 部分样本对比（前 5 条）：
+────────────────────────────────────────────────────────────────────────────────
+
+【样本 1】
+  真实文本: so you won't get hurt . and the cop won't get you . that's true brushing a bear's teeth ? do you do 
+  Baseline: 
+Sure. Uh, brushing a bear's teeth? Do you do that? No. Do you have stuffed animals? Yeah. You don't
+  LoRA 微调: oh . you won't get hurt . and the cops won't get you . that's true . brushing a bear's teeth . do yo
+
+【样本 2】
+  真实文本: so you and this panda would go get a whole bunch of toys at the toy store ? . what toys would you ge
+  Baseline: 
+[English]
+And Miss Tanda would go get a whole bunch of toys at the toy store. Yeah. What toys would
+  LoRA 微调: you and Miss Tanda would go get a whole bunch of toys at the toy store ? yeah . what toys would you 
+
+【样本 3】
+  真实文本: yay so we got where'd you get the robot ? I don't know . I want him . today we're going to do an act
+  Baseline: 
+And you're going to tell me about them. Okay. Look at the picture. Oh, show us the picture. It went
+  LoRA 微调: so we got where'd you get the robot ? I don't know . I want it . we're going to do an activity toget
+
+【样本 4】
+  真实文本: . good job . I like the noise that made . alright . so now I get to do everything . almost . we're g
+  Baseline: 
+[Whispering]
+Good job. I like the noise that made. Alright. So now I get to do everything. Almost. 
+  LoRA 微调: good job . I liked the noise that made . alright . so now I get to do everything . almost . we're go
+
+【样本 5】
+  真实文本: this is Ashton , participant five zero four four . before we start , can you hit a buzzer for me , p
+  Baseline: 
+Apple. Can you maybe think of another word that starts with the same letter?News: News: News: News:
+  LoRA 微调: this is Ashton participant five zero four four . alright before we start can you hit a buzzer for me

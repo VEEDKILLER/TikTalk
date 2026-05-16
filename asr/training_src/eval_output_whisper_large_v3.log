@@ -1,0 +1,54 @@
+
+🔧 评估设备: cuda  |  模型: openai/whisper-large-v3
+   过滤后保留 9173 条有效样本（音频文件存在）
+   测试集: 918 条
+
+═══════════════════════════════════════════
+📊 Baseline — openai/whisper-large-v3
+═══════════════════════════════════════════
+
+═══════════════════════════════════════════
+📊 LoRA 微调 — openai/whisper-large-v3
+═══════════════════════════════════════════
+
+
+╔══════════════════════════════════════════════════════╗
+║  openai/whisper-large-v3                           ║
+╠══════════════════════════════════════════════════════╣
+║  模型变体                  WER      CER     RTFx       ║
+╠══════════════════════════════════════════════════════╣
+║  Baseline          0.1675  0.1265   43.41       ║
+║  LoRA 微调           0.1217  0.0844   40.10       ║
+╠══════════════════════════════════════════════════════╣
+║  WER 提升           +27.34%                           ║
+║  CER 提升           +33.28%                           ║
+╠══════════════════════════════════════════════════════╣
+╚══════════════════════════════════════════════════════╝
+
+📝 部分样本对比（前 5 条）：
+────────────────────────────────────────────────────────────────────────────────
+
+【样本 1】
+  真实文本: so you won't get hurt . and the cop won't get you . that's true brushing a bear's teeth ? do you do 
+  Baseline:  You won't get hurt and the cops won't get you. That's true. Uh... brushing a bear's teeth? Do you d
+  LoRA 微调: you won't get hurt. and the cops won't get you. that's true. brushing a bear's teeth? do you do that
+
+【样本 2】
+  真实文本: so you and this panda would go get a whole bunch of toys at the toy store ? . what toys would you ge
+  Baseline:  So you and this panda would go get a whole bunch of toys at the toy store? Yeah. What toys would yo
+  LoRA 微调: so you and this panda would go get a whole bunch of toys at the toy store? yeah. what toys would you
+
+【样本 3】
+  真实文本: yay so we got where'd you get the robot ? I don't know . I want him . today we're going to do an act
+  Baseline:  Where'd you get the robot? I don't know. I want him. We're going to do an activity together. I'm go
+  LoRA 微调: so we got where'd you get the robot? I don't know. I want him today computer science we're going to 
+
+【样本 4】
+  真实文本: . good job . I like the noise that made . alright . so now I get to do everything . almost . we're g
+  Baseline:  Good job. I like the noise that made. Alright. So now I get to do everything. Almost. We're going t
+  LoRA 微调: good job. I like the noise that made. alright. so now I get to do everything. almost. we're only gon
+
+【样本 5】
+  真实文本: this is Ashton , participant five zero four four . before we start , can you hit a buzzer for me , p
+  Baseline:  This is Ashton, participant 5044. Before we start, can you get a buzzer for me please? Thank you. A
+  LoRA 微调: this is Ashton participant five zero four four. before we start can you hit a buzzer for me please? 

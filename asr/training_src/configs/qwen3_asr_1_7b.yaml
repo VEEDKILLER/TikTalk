@@ -1,0 +1,58 @@
+# Qwen3-ASR-1.7B + LoRA 配置
+#
+# target_modules 已由 scripts/inspect_modules.py 确认（2026-04-13）
+# 架构：音频编码器(audio_tower) + Qwen3 文本解码器(model.layers)
+#   - 音频编码器注意力输出：out_proj
+#   - 文本解码器注意力：q_proj, k_proj, v_proj, o_proj
+
+model:
+  adapter: qwen3
+  model_name: Qwen/Qwen3-ASR-1.7B
+  language: english
+  task: transcribe
+
+lora:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  # 已由 inspect_modules.py 确认
+  # 保守策略（仅注意力层）：显存需求低，适合 3080Ti 16G
+  target_modules: [q_proj, k_proj, v_proj, o_proj, out_proj]
+
+training:
+  output_dir: ./results/qwen3-lora
+  per_device_train_batch_size: 4   # LLM解码器序列更长，显存峰值高于Whisper，减半保险
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4   # 等效 batch_size 仍为16
+  learning_rate: 5.0e-5            # LLM预训练权重用更小lr，避免破坏语言能力
+  num_train_epochs: 5
+  warmup_steps: 50
+  logging_steps: 10
+  eval_steps: 500
+  save_steps: 500
+  early_stopping_patience: 3
+  # Qwen3-ASR 是 decoder-only 模型，Seq2SeqTrainer 的 predict_with_generate
+  # 无法直接使用（架构不同），关闭后只用 eval_loss 做 early stopping
+  predict_with_generate: false
+  prediction_loss_only: true   # 评估只算 loss，不收集 logits（decoder-only 词表大，否则 OOM）
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  seed: 42
+  report_to: tensorboard
+  logging_dir: ./results/logs
+
+data:
+  audio_base_dir: dataset
+  metadata_path: dataset/metadata.csv
+  audio_dir: dataset/audio
+  sampling_rate: 16000
+  seed: 42
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+
+quantization:
+  load_in_4bit: true
+  bnb_4bit_compute_dtype: float16
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true

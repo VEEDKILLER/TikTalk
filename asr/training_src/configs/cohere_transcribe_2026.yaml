@@ -1,0 +1,68 @@
+# Cohere Transcribe 03-2026 + LoRA 配置
+#
+# target_modules 已由 scripts/inspect_modules.py 扫描 modeling_cohere_asr.py 确认
+# 架构（trust_remote_code）：
+#   - 第一套注意力：linear_q, linear_k, linear_v, linear_out  (n_feat × n_feat)
+#   - 第二套注意力：query_net, key_net, value_net, out_projection (hidden_size × hidden_size)
+#   - FFN：dense_in, dense_out
+
+model:
+  adapter: cohere
+  model_name: CohereLabs/cohere-transcribe-03-2026
+  language: english
+  task: transcribe
+
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.1
+  # 只改 decoder 侧第二套注意力（query_net/key_net/value_net/out_projection）；
+  # 第一套 linear_q/k/v/out 在 encoder conformer 里，学风格差异不需要动 encoder，
+  # 再加 FFN 容量过大会让 LoRA 在 9K 小数据上过拟合得更快。
+  target_modules: [query_net, key_net, value_net, out_projection]
+
+training:
+  output_dir: ./results/cohere-lora
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  # 原来 1e-4 在 step 1000 后 eval_loss 反弹（典型过拟合）。Cohere 是 SOTA baseline，
+  # LoRA 学风格 shift 只需要温和微调，3e-5 + 更长 warmup 让 LR 曲线更稳。
+  learning_rate: 3.0e-5
+  num_train_epochs: 3
+  warmup_steps: 100
+  logging_steps: 10
+  eval_steps: 500
+  save_steps: 500
+  early_stopping_patience: 3
+  gradient_checkpointing: false   # CohereAsrForConditionalGeneration 不支持
+  bf16: true                      # fp16 的 -1e9 mask 值溢出 half range，必须用 bf16
+  # Seq2SeqTrainer 的 predict_with_generate 会把 collator 的 decoder_input_ids
+  # 原封不动传给 generate（等于 teacher forcing），导致 eval WER 看起来极低但虚假。
+  # 关掉，只靠 eval_loss 做 early stopping，真实效果在 eval_compare.py 里看。
+  predict_with_generate: false
+  prediction_loss_only: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  seed: 42
+  report_to: tensorboard
+  logging_dir: ./results/logs
+
+data:
+  audio_base_dir: dataset
+  metadata_path: dataset/metadata.csv
+  audio_dir: dataset/audio
+  sampling_rate: 16000
+  seed: 42
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+
+quantization:
+  # Cohere 必须关量化：AutoModelForSpeechSeq2Seq.from_pretrained 在量化路径
+  # 下会静默只加载 ~40% 权重（HF 5.x bug），之后再 load_state_dict 也无法写进
+  # Linear4bit 的 Params4bit。关掉量化走 bf16，1.5B 权重 ~3GB，3080 Ti 够。
+  load_in_4bit: false
+  bnb_4bit_compute_dtype: bfloat16
+  bnb_4bit_quant_type: nf4
+  bnb_4bit_use_double_quant: true
