@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tiktalk-vlm-ground-truth"
+version = "0.1.0"
+description = "TikTalk VLM pipeline for generating ground-truth JSON from diffusion model images."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "google-genai>=1.0.0",
+  "openai>=1.0.0",
+  "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

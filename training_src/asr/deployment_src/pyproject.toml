@@ -1,0 +1,16 @@
+[project]
+name = "tiktalk-asr-cloud-deploy"
+version = "0.1.0"
+description = "Deploy LoRA fine-tuned Whisper large-v3 on Modal with faster-whisper"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.13.0",
+    "ctranslate2>=4.7.1",
+    "fastapi>=0.135.1",
+    "modal>=1.3.5",
+    "peft>=0.18.1",
+    "python-multipart>=0.0.22",
+    "torch>=2.10.0",
+    "transformers>=5.3.0",
+]
