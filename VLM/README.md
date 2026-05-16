@@ -27,15 +27,15 @@ GEMINI_API_KEY=...
 Optional overrides:
 
 ```bash
-OPENAI_VLM_MODEL=gpt-5-nano
+OPENAI_VLM_MODEL=gpt-5.4
 QWEN_VLM_MODEL=qwen3-vl-plus
 QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-GEMINI_JUDGE_MODEL=gemini-3-flash-preview
+GEMINI_JUDGE_MODEL=gemini-3.1-pro-preview
 ```
 
 The pipeline auto-loads `.env` via `python-dotenv` when you call `generate_ground_truth`.
 
-`gpt-5-nano` is the default OpenAI model in this scaffold because OpenAI's official catalog currently documents `gpt-5-nano`, not a literal `gpt-5.4-nano` alias. If your account exposes a different model id, override `OPENAI_VLM_MODEL`.
+`gpt-5.4` is the default OpenAI VLM branch model. `gemini-3.1-pro-preview` is used as the Gemini judge. If your account exposes a different model id, override the corresponding environment variable.
 
 ## Usage
 

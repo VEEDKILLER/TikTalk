@@ -112,10 +112,10 @@ class PipelineConfig:
     openai_api_key: str | None = None
     dashscope_api_key: str | None = None
     gemini_api_key: str | None = None
-    openai_model: str = "gpt-4o"
+    openai_model: str = "gpt-5.4"
     qwen_model: str = "qwen-vl-plus"
     qwen_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    gemini_model: str = "gemini-1.5-flash"
+    gemini_model: str = "gemini-3.1-pro-preview"
     request_timeout_seconds: float = 60.0
 
     @classmethod
@@ -127,13 +127,13 @@ class PipelineConfig:
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             dashscope_api_key=os.getenv("DASHSCOPE_API_KEY"),
             gemini_api_key=os.getenv("GEMINI_API_KEY"),
-            openai_model=os.getenv("OPENAI_VLM_MODEL", "gpt-4o"),
+            openai_model=os.getenv("OPENAI_VLM_MODEL", "gpt-5.4"),
             qwen_model=os.getenv("QWEN_VLM_MODEL", "qwen-vl-plus"),
             qwen_base_url=os.getenv(
                 "QWEN_BASE_URL",
                 "https://dashscope.aliyuncs.com/compatible-mode/v1",
             ),
-            gemini_model=os.getenv("GEMINI_JUDGE_MODEL", "gemini-1.5-flash"),
+            gemini_model=os.getenv("GEMINI_JUDGE_MODEL", "gemini-3.1-pro-preview"),
             request_timeout_seconds=float(os.getenv("VLM_REQUEST_TIMEOUT_SECONDS", "60")),
         )
 
