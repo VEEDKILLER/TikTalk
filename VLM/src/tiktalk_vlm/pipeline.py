@@ -54,21 +54,45 @@ Generate descriptive text as a standard reference for evaluating a child's spoke
 
 {
 
-    "scene_summary": "One very simple summary sentence.",
+    "summary": "One very simple summary sentence.",
 
-    "detailed_description": "Two to four short factual sentences.",
+    "reference_sentences": [
 
-    "main_objects": [{"name": "girl", "count": 1, "attributes": ["red shirt"]}],
+        "Standard description sentence 1",
 
-    "actions": ["playing with a ball"],
+        "Standard description sentence 2",
 
-    "setting": "park",
+        "..."
 
-    "visible_text": [],
+    ],
 
-    "teaching_focus_words": ["girl", "ball", "park", "play", "red"],
+    "key_keywords": ["Core keyword 1", "Core keyword 2", "..."]
 
-    "age_level": "junior_learners"
+}
+
+
+
+# Example
+
+(If the image shows a little girl playing football in a park)
+
+{
+
+    "summary": "A girl is playing football in the park.",
+
+    "reference_sentences": [
+
+        "I can see a girl.",
+
+        "The girl is wearing a red shirt.",
+
+        "She is playing with a ball.",
+
+        "The grass is green."
+
+    ],
+
+    "key_keywords": ["girl", "ball", "park", "play", "red"]
 
 }
 """
@@ -113,7 +137,7 @@ class PipelineConfig:
     dashscope_api_key: str | None = None
     gemini_api_key: str | None = None
     openai_model: str = "gpt-5.4"
-    qwen_model: str = "qwen-vl-plus"
+    qwen_model: str = "qwen3-vl-plus"
     qwen_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
     gemini_model: str = "gemini-3.1-pro-preview"
     request_timeout_seconds: float = 60.0
@@ -128,7 +152,7 @@ class PipelineConfig:
             dashscope_api_key=os.getenv("DASHSCOPE_API_KEY"),
             gemini_api_key=os.getenv("GEMINI_API_KEY"),
             openai_model=os.getenv("OPENAI_VLM_MODEL", "gpt-5.4"),
-            qwen_model=os.getenv("QWEN_VLM_MODEL", "qwen-vl-plus"),
+            qwen_model=os.getenv("QWEN_VLM_MODEL", "qwen3-vl-plus"),
             qwen_base_url=os.getenv(
                 "QWEN_BASE_URL",
                 "https://dashscope.aliyuncs.com/compatible-mode/v1",
@@ -275,8 +299,8 @@ class GroundTruthPipeline:
 
         try:
             from openai import OpenAI
-        except ImportError as exc:
-            raise PipelineError("openai package is required.") from exc
+        except ImportError as exc:  # pragma: no cover - dependency error path
+            raise PipelineError("openai package is required. Install project dependencies first.") from exc
 
         self._openai_client = OpenAI(
             api_key=self.config.openai_api_key,
@@ -293,8 +317,8 @@ class GroundTruthPipeline:
 
         try:
             from openai import OpenAI
-        except ImportError as exc:
-            raise PipelineError("openai package is required.") from exc
+        except ImportError as exc:  # pragma: no cover - dependency error path
+            raise PipelineError("openai package is required. Install project dependencies first.") from exc
 
         self._qwen_client = OpenAI(
             api_key=self.config.dashscope_api_key,
@@ -312,8 +336,10 @@ class GroundTruthPipeline:
 
         try:
             from google import genai
-        except ImportError as exc:
-            raise PipelineError("google-genai package is required.") from exc
+        except ImportError as exc:  # pragma: no cover - dependency error path
+            raise PipelineError(
+                "google-genai package is required. Install project dependencies first."
+            ) from exc
 
         self._gemini_client = genai.Client(api_key=self.config.gemini_api_key)
         return self._gemini_client

@@ -67,7 +67,7 @@ def test_gemini():
     try:
         from google import genai
         client = genai.Client(api_key=key)
-        model = os.getenv("GEMINI_JUDGE_MODEL", "gemini-1.5-flash")
+        model = os.getenv("GEMINI_JUDGE_MODEL", "gemini-3.1-pro-preview")
         resp = client.models.generate_content(
             model=model,
             contents="Reply with the single word: ok",

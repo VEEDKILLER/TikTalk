@@ -1,0 +1,1192 @@
+{
+  "dataset": "test_images",
+  "started_at": "2026-03-21T12:32:52.671802+00:00",
+  "finished_at": "2026-03-21T12:36:43.838279+00:00",
+  "duration_seconds": 231.166477,
+  "total_images": 6,
+  "success_count": 6,
+  "failed_count": 0,
+  "results": [
+    {
+      "image": "download (1).jpg",
+      "status": "success",
+      "duration_seconds": 34.36337599999388,
+      "chosen_provider": "qwen",
+      "candidates": {
+        "qwen": {
+          "actions": [
+            "looking",
+            "holding",
+            "sitting"
+          ],
+          "age_level": "junior_learners",
+          "detailed_description": "A girl and a boy are in the forest. The girl holds a magnifying glass and looks at a frog. The boy looks at the frog too. The frog sits on a rock.",
+          "main_objects": [
+            {
+              "name": "girl",
+              "count": 1,
+              "attributes": [
+                "wearing glasses",
+                "wearing pink shirt",
+                "brown hair"
+              ]
+            },
+            {
+              "name": "boy",
+              "count": 1,
+              "attributes": [
+                "black hair",
+                "green shirt"
+              ]
+            },
+            {
+              "name": "frog",
+              "count": 1,
+              "attributes": [
+                "yellow",
+                "sitting"
+              ]
+            },
+            {
+              "name": "rock",
+              "count": 1,
+              "attributes": [
+                "brown",
+                "round"
+              ]
+            },
+            {
+              "name": "magnifying glass",
+              "count": 1,
+              "attributes": [
+                "blue",
+                "round"
+              ]
+            }
+          ],
+          "scene_summary": "Two children look at a yellow frog with a magnifying glass in the forest.",
+          "setting": "forest with big green leaves",
+          "teaching_focus_words": [
+            "frog",
+            "magnifying glass",
+            "forest",
+            "look",
+            "yellow",
+            "rock",
+            "girl",
+            "boy"
+          ],
+          "visible_text": [
+            "© BORIS STANISLAV"
+          ]
+        },
+        "openai": {
+          "scene_summary": "Two kids watch a small orange frog on a rock in a pond.",
+          "detailed_description": "A girl and a boy are in a green pond area with big leaves. The girl wears glasses and holds a magnifying glass. The frog sits on a rock near the lily pads.",
+          "main_objects": [
+            {
+              "name": "girl",
+              "count": 1,
+              "attributes": [
+                "pink shirt",
+                "glasses"
+              ]
+            },
+            {
+              "name": "boy",
+              "count": 1,
+              "attributes": [
+                "green shirt"
+              ]
+            },
+            {
+              "name": "frog",
+              "count": 1,
+              "attributes": [
+                "orange"
+              ]
+            },
+            {
+              "name": "rock",
+              "count": 1,
+              "attributes": [
+                "gray"
+              ]
+            },
+            {
+              "name": "lily pad",
+              "count": 4,
+              "attributes": [
+                "green"
+              ]
+            },
+            {
+              "name": "magnifying glass",
+              "count": 1,
+              "attributes": [
+                "used by girl"
+              ]
+            }
+          ],
+          "actions": [
+            "The girl looks at the frog through a magnifying glass.",
+            "The boy watches the frog.",
+            "The frog sits on a rock."
+          ],
+          "setting": "a sunny pond area with big green leaves and lily pads",
+          "visible_text": [],
+          "teaching_focus_words": [
+            "girl",
+            "boy",
+            "frog",
+            "rock",
+            "pond",
+            "green",
+            "orange",
+            "pink\",\"glasses\",\"magnifying glass\",\"look\",\"see\",\"one\",\"two"
+          ],
+          "age_level": "junior_learners"
+        }
+      },
+      "result": {
+        "actions": [
+          "looking",
+          "holding",
+          "sitting"
+        ],
+        "age_level": "junior_learners",
+        "detailed_description": "A girl and a boy are in the forest. The girl holds a magnifying glass and looks at a frog. The boy looks at the frog too. The frog sits on a rock.",
+        "main_objects": [
+          {
+            "name": "girl",
+            "count": 1,
+            "attributes": [
+              "wearing glasses",
+              "wearing pink shirt",
+              "brown hair"
+            ]
+          },
+          {
+            "name": "boy",
+            "count": 1,
+            "attributes": [
+              "black hair",
+              "green shirt"
+            ]
+          },
+          {
+            "name": "frog",
+            "count": 1,
+            "attributes": [
+              "yellow",
+              "sitting"
+            ]
+          },
+          {
+            "name": "rock",
+            "count": 1,
+            "attributes": [
+              "brown",
+              "round"
+            ]
+          },
+          {
+            "name": "magnifying glass",
+            "count": 1,
+            "attributes": [
+              "blue",
+              "round"
+            ]
+          }
+        ],
+        "scene_summary": "Two children look at a yellow frog with a magnifying glass in the forest.",
+        "setting": "forest with big green leaves",
+        "teaching_focus_words": [
+          "frog",
+          "magnifying glass",
+          "forest",
+          "look",
+          "yellow",
+          "rock",
+          "girl",
+          "boy"
+        ],
+        "visible_text": [
+          "© BORIS STANISLAV"
+        ]
+      }
+    },
+    {
+      "image": "download (2).jpg",
+      "status": "success",
+      "duration_seconds": 25.68846819997998,
+      "chosen_provider": "qwen",
+      "candidates": {
+        "qwen": {
+          "actions": [
+            "running",
+            "walking",
+            "holding a bag"
+          ],
+          "age_level": "junior_learners",
+          "detailed_description": "A little girl with red hair is running happily. She wears a pink skirt and red shoes. A small white dog with brown spots runs beside her. The dog wears a red scarf. Other people are walking around them on the street.",
+          "main_objects": [
+            {
+              "name": "girl",
+              "count": 1,
+              "attributes": [
+                "red hair",
+                "pink skirt",
+                "red shoes",
+                "happy face"
+              ]
+            },
+            {
+              "name": "dog",
+              "count": 1,
+              "attributes": [
+                "white",
+                "brown spots",
+                "red scarf"
+              ]
+            },
+            {
+              "name": "people",
+              "count": 2,
+              "attributes": [
+                "blue jeans",
+                "white shoes",
+                "carrying bag"
+              ]
+            }
+          ],
+          "scene_summary": "A girl and her dog are running on a busy street.",
+          "setting": "on a city street",
+          "teaching_focus_words": [
+            "girl",
+            "dog",
+            "running",
+            "street",
+            "red",
+            "white",
+            "happy",
+            "scarf"
+          ],
+          "visible_text": []
+        },
+        "openai": {
+          "scene_summary": "Two dogs walk on a sidewalk with people nearby.",
+          "detailed_description": "Two dogs walk on the sidewalk. One dog wears a pink dress. The other dog is white with brown ears. People stand around them.",
+          "main_objects": [
+            {
+              "name": "dog",
+              "count": 1,
+              "attributes": [
+                "brown and white",
+                "wearing a pink dress"
+              ]
+            },
+            {
+              "name": "dog",
+              "count": 1,
+              "attributes": [
+                "white with brown ears"
+              ]
+            }
+          ],
+          "actions": [
+            "The dogs are walking.",
+            "People are standing nearby."
+          ],
+          "setting": "On a busy sidewalk.",
+          "visible_text": [],
+          "teaching_focus_words": [
+            "dog",
+            "walk",
+            "pink",
+            "dress",
+            "brown",
+            "white",
+            "ears",
+            "people/sidewalk"
+          ],
+          "age_level": "junior_learners"
+        }
+      },
+      "result": {
+        "actions": [
+          "running",
+          "walking",
+          "holding a bag"
+        ],
+        "age_level": "junior_learners",
+        "detailed_description": "A little girl with red hair is running happily. She wears a pink skirt and red shoes. A small white dog with brown spots runs beside her. The dog wears a red scarf. Other people are walking around them on the street.",
+        "main_objects": [
+          {
+            "name": "girl",
+            "count": 1,
+            "attributes": [
+              "red hair",
+              "pink skirt",
+              "red shoes",
+              "happy face"
+            ]
+          },
+          {
+            "name": "dog",
+            "count": 1,
+            "attributes": [
+              "white",
+              "brown spots",
+              "red scarf"
+            ]
+          },
+          {
+            "name": "people",
+            "count": 2,
+            "attributes": [
+              "blue jeans",
+              "white shoes",
+              "carrying bag"
+            ]
+          }
+        ],
+        "scene_summary": "A girl and her dog are running on a busy street.",
+        "setting": "on a city street",
+        "teaching_focus_words": [
+          "girl",
+          "dog",
+          "running",
+          "street",
+          "red",
+          "white",
+          "happy",
+          "scarf"
+        ],
+        "visible_text": []
+      }
+    },
+    {
+      "image": "download (3).jpg",
+      "status": "success",
+      "duration_seconds": 51.95537760001025,
+      "chosen_provider": "qwen",
+      "candidates": {
+        "qwen": {
+          "actions": [
+            "walking",
+            "carrying a guitar"
+          ],
+          "age_level": "junior_learners",
+          "detailed_description": "A boy with curly brown hair is walking on a path. He is carrying a purple guitar. There is a small house with a pointed roof and trees with orange fruit. The sky is pink and purple.",
+          "main_objects": [
+            {
+              "name": "boy",
+              "count": 1,
+              "attributes": [
+                "curly brown hair",
+                "purple shirt",
+                "brown pants"
+              ]
+            },
+            {
+              "name": "guitar",
+              "count": 1,
+              "attributes": [
+                "purple",
+                "guitar shape"
+              ]
+            },
+            {
+              "name": "house",
+              "count": 1,
+              "attributes": [
+                "small",
+                "brown roof",
+                "blue windows"
+              ]
+            },
+            {
+              "name": "tree",
+              "count": 2,
+              "attributes": [
+                "orange fruit",
+                "green leaves"
+              ]
+            },
+            {
+              "name": "pine tree",
+              "count": 3,
+              "attributes": [
+                "tall",
+                "green",
+                "pointy"
+              ]
+            }
+          ],
+          "scene_summary": "A boy walks with a guitar near a house and trees.",
+          "setting": "a colorful outdoor path near a house",
+          "teaching_focus_words": [
+            "boy",
+            "guitar",
+            "house",
+            "tree",
+            "walk",
+            "purple",
+            "orange",
+            "path"
+          ],
+          "visible_text": []
+        },
+        "openai": {
+          "scene_summary": "A child is walking on a path in a colorful autumn park.",
+          "detailed_description": "There is a child walking on a path. The child has brown skin and curly hair. The child wears a purple backpack. There are orange trees and purple plants in a sunny park near a house with a brown roof.",
+          "main_objects": [
+            {
+              "name": "child",
+              "count": 1,
+              "attributes": [
+                "brown skin",
+                "curly hair",
+                "purple backpack"
+              ]
+            },
+            {
+              "name": "backpack",
+              "count": 1,
+              "attributes": [
+                "purple"
+              ]
+            },
+            {
+              "name": "house",
+              "count": 1,
+              "attributes": [
+                "brown roof",
+                "thatched style"
+              ]
+            },
+            {
+              "name": "tree",
+              "count": 4,
+              "attributes": [
+                "orange leaves"
+              ]
+            },
+            {
+              "name": "path",
+              "count": 1,
+              "attributes": [
+                "dirt path"
+              ]
+            },
+            {
+              "name": "plant",
+              "count": 1,
+              "attributes": [
+                "purple color",
+                "foreground"
+              ]
+            }
+          ],
+          "actions": [
+            "The child is walking along a path.",
+            "The child reaches toward a tree."
+          ],
+          "setting": "In a park at sunset.",
+          "visible_text": [],
+          "teaching_focus_words": [
+            "child",
+            "walk",
+            "path",
+            "backpack",
+            "purple",
+            "orange",
+            "tree",
+            "house\",\"sunset\",\"autumn\",\"brown\",\"hair"
+          ],
+          "age_level": "junior_learners"
+        }
+      },
+      "result": {
+        "actions": [
+          "walking",
+          "carrying a guitar"
+        ],
+        "age_level": "junior_learners",
+        "detailed_description": "A boy with curly brown hair is walking on a path. He is carrying a purple guitar. There is a small house with a pointed roof and trees with orange fruit. The sky is pink and purple.",
+        "main_objects": [
+          {
+            "name": "boy",
+            "count": 1,
+            "attributes": [
+              "curly brown hair",
+              "purple shirt",
+              "brown pants"
+            ]
+          },
+          {
+            "name": "guitar",
+            "count": 1,
+            "attributes": [
+              "purple",
+              "guitar shape"
+            ]
+          },
+          {
+            "name": "house",
+            "count": 1,
+            "attributes": [
+              "small",
+              "brown roof",
+              "blue windows"
+            ]
+          },
+          {
+            "name": "tree",
+            "count": 2,
+            "attributes": [
+              "orange fruit",
+              "green leaves"
+            ]
+          },
+          {
+            "name": "pine tree",
+            "count": 3,
+            "attributes": [
+              "tall",
+              "green",
+              "pointy"
+            ]
+          }
+        ],
+        "scene_summary": "A boy walks with a guitar near a house and trees.",
+        "setting": "a colorful outdoor path near a house",
+        "teaching_focus_words": [
+          "boy",
+          "guitar",
+          "house",
+          "tree",
+          "walk",
+          "purple",
+          "orange",
+          "path"
+        ],
+        "visible_text": []
+      }
+    },
+    {
+      "image": "download (4).jpg",
+      "status": "success",
+      "duration_seconds": 35.21204119999311,
+      "chosen_provider": "qwen",
+      "candidates": {
+        "qwen": {
+          "actions": [
+            "fishing",
+            "holding a net",
+            "jumping",
+            "sitting"
+          ],
+          "age_level": "junior_learners",
+          "detailed_description": "An old man sits on a wooden bench under a big tree. He holds a fishing rod and looks at the water. A boy jumps near the water and holds a net. The water is blue and there is a fish in the net.",
+          "main_objects": [
+            {
+              "name": "man",
+              "count": 1,
+              "attributes": [
+                "old",
+                "white hair",
+                "red shirt",
+                "brown pants"
+              ]
+            },
+            {
+              "name": "boy",
+              "count": 1,
+              "attributes": [
+                "young",
+                "black hair",
+                "green shirt",
+                "blue shorts",
+                "orange cape"
+              ]
+            },
+            {
+              "name": "water",
+              "count": 1,
+              "attributes": [
+                "blue",
+                "wavy"
+              ]
+            },
+            {
+              "name": "tree",
+              "count": 1,
+              "attributes": [
+                "green",
+                "big leaves"
+              ]
+            },
+            {
+              "name": "fish",
+              "count": 1,
+              "attributes": [
+                "silver",
+                "small"
+              ]
+            },
+            {
+              "name": "net",
+              "count": 1,
+              "attributes": [
+                "white",
+                "mesh"
+              ]
+            },
+            {
+              "name": "bench",
+              "count": 1,
+              "attributes": [
+                "wooden",
+                "brown"
+              ]
+            },
+            {
+              "name": "bucket",
+              "count": 1,
+              "attributes": [
+                "red",
+                "round"
+              ]
+            }
+          ],
+          "scene_summary": "A man and a boy are fishing by a river.",
+          "setting": "by a river under a big tree",
+          "teaching_focus_words": [
+            "man",
+            "boy",
+            "fish",
+            "net",
+            "water",
+            "tree",
+            "fishing",
+            "jump"
+          ],
+          "visible_text": []
+        },
+        "openai": {
+          "scene_summary": "A boy and an old man are fishing by a lake.",
+          "detailed_description": "An old man sits on a chair by the water and fishes with a rod. A boy stands on a wooden beam and holds a net. A fish is in the water near the net.",
+          "main_objects": [
+            {
+              "name": "old man",
+              "count": 1,
+              "attributes": [
+                "sits on a chair",
+                "gray hair"
+              ]
+            },
+            {
+              "name": "boy",
+              "count": 1,
+              "attributes": [
+                "green shirt",
+                "orange cape",
+                "blue shorts"
+              ]
+            },
+            {
+              "name": "net",
+              "count": 1,
+              "attributes": [
+                "fishing net"
+              ]
+            },
+            {
+              "name": "fishing rod",
+              "count": 1,
+              "attributes": [
+                "used by man"
+              ]
+            },
+            {
+              "name": "water",
+              "count": 1,
+              "attributes": [
+                "blue"
+              ]
+            },
+            {
+              "name": "beam",
+              "count": 1,
+              "attributes": [
+                "wooden"
+              ]
+            },
+            {
+              "name": "tree",
+              "count": 1,
+              "attributes": [
+                "green leaves"
+              ]
+            },
+            {
+              "name": "bucket",
+              "count": 1,
+              "attributes": [
+                "red"
+              ]
+            }
+          ],
+          "actions": [
+            "The old man sits and fishes.",
+            "The boy stands on a wooden beam with a net.",
+            "A fish is in the water near the net."
+          ],
+          "setting": "by a lake on a sunny day",
+          "visible_text": [],
+          "teaching_focus_words": [
+            "boy",
+            "man",
+            "fish",
+            "net",
+            "fishing",
+            "water",
+            "beam",
+            "tree\",\"red\",\"green\",\"blue"
+          ],
+          "age_level": "junior_learners"
+        }
+      },
+      "result": {
+        "actions": [
+          "fishing",
+          "holding a net",
+          "jumping",
+          "sitting"
+        ],
+        "age_level": "junior_learners",
+        "detailed_description": "An old man sits on a wooden bench under a big tree. He holds a fishing rod and looks at the water. A boy jumps near the water and holds a net. The water is blue and there is a fish in the net.",
+        "main_objects": [
+          {
+            "name": "man",
+            "count": 1,
+            "attributes": [
+              "old",
+              "white hair",
+              "red shirt",
+              "brown pants"
+            ]
+          },
+          {
+            "name": "boy",
+            "count": 1,
+            "attributes": [
+              "young",
+              "black hair",
+              "green shirt",
+              "blue shorts",
+              "orange cape"
+            ]
+          },
+          {
+            "name": "water",
+            "count": 1,
+            "attributes": [
+              "blue",
+              "wavy"
+            ]
+          },
+          {
+            "name": "tree",
+            "count": 1,
+            "attributes": [
+              "green",
+              "big leaves"
+            ]
+          },
+          {
+            "name": "fish",
+            "count": 1,
+            "attributes": [
+              "silver",
+              "small"
+            ]
+          },
+          {
+            "name": "net",
+            "count": 1,
+            "attributes": [
+              "white",
+              "mesh"
+            ]
+          },
+          {
+            "name": "bench",
+            "count": 1,
+            "attributes": [
+              "wooden",
+              "brown"
+            ]
+          },
+          {
+            "name": "bucket",
+            "count": 1,
+            "attributes": [
+              "red",
+              "round"
+            ]
+          }
+        ],
+        "scene_summary": "A man and a boy are fishing by a river.",
+        "setting": "by a river under a big tree",
+        "teaching_focus_words": [
+          "man",
+          "boy",
+          "fish",
+          "net",
+          "water",
+          "tree",
+          "fishing",
+          "jump"
+        ],
+        "visible_text": []
+      }
+    },
+    {
+      "image": "download.jpg",
+      "status": "success",
+      "duration_seconds": 42.0207570999919,
+      "chosen_provider": "qwen",
+      "candidates": {
+        "qwen": {
+          "actions": [
+            "holding teddy bears",
+            "standing",
+            "looking at each other"
+          ],
+          "age_level": "junior_learners",
+          "detailed_description": "A boy with white hair is holding a brown teddy bear. A green dragon is also holding a teddy bear. They are standing in a forest with trees and rocks. The boy wears a yellow cape and red clothes.",
+          "main_objects": [
+            {
+              "name": "boy",
+              "count": 1,
+              "attributes": [
+                "white hair",
+                "yellow cape",
+                "red clothes",
+                "holding teddy bear"
+              ]
+            },
+            {
+              "name": "dragon",
+              "count": 1,
+              "attributes": [
+                "green",
+                "big eyes",
+                "holding teddy bear",
+                "wearing pink scarf"
+              ]
+            },
+            {
+              "name": "teddy bear",
+              "count": 2,
+              "attributes": [
+                "brown",
+                "small"
+              ]
+            }
+          ],
+          "scene_summary": "A boy and a green dragon are standing in the forest, each holding a teddy bear.",
+          "setting": "forest with trees and rocks",
+          "teaching_focus_words": [
+            "boy",
+            "dragon",
+            "teddy bear",
+            "green",
+            "yellow",
+            "forest",
+            "holding"
+          ],
+          "visible_text": []
+        },
+        "openai": {
+          "scene_summary": "Two kids and a dragon are in a forest, eating snacks.",
+          "detailed_description": "Two kids and a green dragon are in a forest. One kid has blond hair and wears red clothes. The dragon wears pink and purple clothes. They are eating snacks together.",
+          "main_objects": [
+            {
+              "name": "kid",
+              "count": 2,
+              "attributes": [
+                "blond hair",
+                "red clothes"
+              ]
+            },
+            {
+              "name": "dragon",
+              "count": 1,
+              "attributes": [
+                "green",
+                "pink and purple clothes"
+              ]
+            },
+            {
+              "name": "snack",
+              "count": 2,
+              "attributes": [
+                "snacks"
+              ]
+            }
+          ],
+          "actions": [
+            "They are eating snacks.",
+            "They stand in a forest."
+          ],
+          "setting": "In a forest with rocks and trees.",
+          "visible_text": [],
+          "teaching_focus_words": [
+            "child",
+            "dragon",
+            "forest",
+            "snack",
+            "eat",
+            "two",
+            "red",
+            "green\", \"pink"
+          ],
+          "age_level": "junior_learners"
+        }
+      },
+      "result": {
+        "actions": [
+          "holding teddy bears",
+          "standing",
+          "looking at each other"
+        ],
+        "age_level": "junior_learners",
+        "detailed_description": "A boy with white hair is holding a brown teddy bear. A green dragon is also holding a teddy bear. They are standing in a forest with trees and rocks. The boy wears a yellow cape and red clothes.",
+        "main_objects": [
+          {
+            "name": "boy",
+            "count": 1,
+            "attributes": [
+              "white hair",
+              "yellow cape",
+              "red clothes",
+              "holding teddy bear"
+            ]
+          },
+          {
+            "name": "dragon",
+            "count": 1,
+            "attributes": [
+              "green",
+              "big eyes",
+              "holding teddy bear",
+              "wearing pink scarf"
+            ]
+          },
+          {
+            "name": "teddy bear",
+            "count": 2,
+            "attributes": [
+              "brown",
+              "small"
+            ]
+          }
+        ],
+        "scene_summary": "A boy and a green dragon are standing in the forest, each holding a teddy bear.",
+        "setting": "forest with trees and rocks",
+        "teaching_focus_words": [
+          "boy",
+          "dragon",
+          "teddy bear",
+          "green",
+          "yellow",
+          "forest",
+          "holding"
+        ],
+        "visible_text": []
+      }
+    },
+    {
+      "image": "images.jpg",
+      "status": "success",
+      "duration_seconds": 41.919612500001676,
+      "chosen_provider": "qwen",
+      "candidates": {
+        "qwen": {
+          "actions": [
+            "looking up",
+            "standing",
+            "holding hands"
+          ],
+          "age_level": "junior_learners",
+          "detailed_description": "Two girls are standing in a forest. They are looking up at a big snake on a tree branch. A white rabbit is beside them. The girls are holding hands.",
+          "main_objects": [
+            {
+              "name": "girl",
+              "count": 1,
+              "attributes": [
+                "dark curly hair",
+                "brown dress"
+              ]
+            },
+            {
+              "name": "girl",
+              "count": 1,
+              "attributes": [
+                "light brown hair",
+                "green top",
+                "brown skirt"
+              ]
+            },
+            {
+              "name": "rabbit",
+              "count": 1,
+              "attributes": [
+                "white",
+                "long ears"
+              ]
+            },
+            {
+              "name": "snake",
+              "count": 1,
+              "attributes": [
+                "red head",
+                "brown body",
+                "coiled"
+              ]
+            }
+          ],
+          "scene_summary": "Two girls and a rabbit look at a snake in the forest.",
+          "setting": "forest at night or dusk",
+          "teaching_focus_words": [
+            "girl",
+            "rabbit",
+            "snake",
+            "forest",
+            "look",
+            "hand",
+            "tree",
+            "red"
+          ],
+          "visible_text": []
+        },
+        "openai": {
+          "scene_summary": "Two girls in red dresses stand in a magical forest.",
+          "detailed_description": "Two girls in red dresses stand in a magical forest. A small white rabbit sits on the ground beside them. A purple dragon is wrapped around a tree branch. The forest has blue and green light.",
+          "main_objects": [
+            {
+              "name": "girl",
+              "count": 2,
+              "attributes": [
+                "red dress"
+              ]
+            },
+            {
+              "name": "rabbit",
+              "count": 1,
+              "attributes": [
+                "white"
+              ]
+            },
+            {
+              "name": "dragon",
+              "count": 1,
+              "attributes": [
+                "purple",
+                "long"
+              ]
+            },
+            {
+              "name": "tree",
+              "count": 1,
+              "attributes": [
+                "branch",
+                "twisted"
+              ]
+            }
+          ],
+          "actions": [
+            "The girls look at the dragon.",
+            "The dragon is wrapped around a tree branch.",
+            "The rabbit sits on the ground."
+          ],
+          "setting": "in a magical forest",
+          "visible_text": [],
+          "teaching_focus_words": [
+            "girl",
+            "rabbit",
+            "dragon",
+            "forest",
+            "red",
+            "dress",
+            "look",
+            "see”,"
+          ],
+          "age_level": "junior_learners"
+        }
+      },
+      "result": {
+        "actions": [
+          "looking up",
+          "standing",
+          "holding hands"
+        ],
+        "age_level": "junior_learners",
+        "detailed_description": "Two girls are standing in a forest. They are looking up at a big snake on a tree branch. A white rabbit is beside them. The girls are holding hands.",
+        "main_objects": [
+          {
+            "name": "girl",
+            "count": 1,
+            "attributes": [
+              "dark curly hair",
+              "brown dress"
+            ]
+          },
+          {
+            "name": "girl",
+            "count": 1,
+            "attributes": [
+              "light brown hair",
+              "green top",
+              "brown skirt"
+            ]
+          },
+          {
+            "name": "rabbit",
+            "count": 1,
+            "attributes": [
+              "white",
+              "long ears"
+            ]
+          },
+          {
+            "name": "snake",
+            "count": 1,
+            "attributes": [
+              "red head",
+              "brown body",
+              "coiled"
+            ]
+          }
+        ],
+        "scene_summary": "Two girls and a rabbit look at a snake in the forest.",
+        "setting": "forest at night or dusk",
+        "teaching_focus_words": [
+          "girl",
+          "rabbit",
+          "snake",
+          "forest",
+          "look",
+          "hand",
+          "tree",
+          "red"
+        ],
+        "visible_text": []
+      }
+    }
+  ]
+}
