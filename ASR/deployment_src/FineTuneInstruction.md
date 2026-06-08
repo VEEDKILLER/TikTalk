@@ -1,47 +1,31 @@
-This project fine-tunes the Whisper model using LoRA.
-Dataset: a preprocessed child speech conversation dataset from TalkBank.
+# Fine-Tuning Notes
 
-Dataset structure and paths:
-Metadata (containing audio file paths and transcription text): dataset/metadata.csv
-Audio files: dataset/audio/xxx.wav
-(Currently, only 5 samples have been selected for code training and testing due to the large audio dataset size.)
+This document records how the LoRA adapter in `best_adapter/` was produced. The full
+training framework, configs, and evaluation live in [`../training_src/`](../training_src).
 
-Note: The dataset has not been split into train/validation/test sets. The split must be performed at training time using random seed 42, to allow fair comparison between the baseline model and the fine-tuned model.
+## Model and adaptation
 
-Fine-tuning details:
-1. Baseline model: the plain Whisper model without any fine-tuning
-2. Fine-tuned model: Whisper large-v3 fine-tuned with LoRA
-3. Early stopping is required: stop training when the WER on the validation set does not decrease for 3 consecutive epochs
-4. Compare the two models on the test set to demonstrate the effect of fine-tuning
+- **Backbone**: `openai/whisper-large-v3`
+- **Method**: Low-Rank Adaptation (LoRA) via PEFT
+- **LoRA config**: rank r=16, α=32, dropout 0.05, target modules `q_proj, v_proj`
 
-This project uses uv for environment management (all dependencies except bitsandbytes are installed).
-Code testing environment: Mac, M4 chip (current)
-Actual training environment: 3080Ti GPU, 16GB VRAM, Ubuntu on WSL2 (future — the same code should transfer directly by detecting the CUDA GPU)
+## Training setup
 
-Required dependencies:
-Hugging Face transformers, peft, datasets, torch, soundfile, jiwer+evaluate (for WER/SER/CER metrics), tqdm
-accelerate
-tensorboard (for visualizing the training process)
-bitsandbytes (for loading the large-v3 model at reduced precision; note: only enabled on CUDA, not activated on Mac; not yet installed via uv)
+- **Optimizer / schedule**: AdamW, learning rate 1e-4, linear warmup (50 steps)
+- **Effective batch size 16**: per-device batch 8 × gradient accumulation 2
+- **Precision**: FP16 on CUDA, with 4-bit bitsandbytes quantization for the base weights
+- **Early stopping**: monitors validation WER, patience 3, up to 5 epochs
+- **Metrics**: WER/CER computed after applying the Whisper English text normalizer
+  (lowercase, strip punctuation) to both predictions and references
 
-Training stack: Seq2SeqTrainer + peft + Accelerate + bitsandbytes
+## Dataset
 
-LoRA (PEFT) configuration
-* **Target Modules**: `["q_proj", "v_proj"]` (focused on the core attention layers)
-* **Rank (r)**: 32
-* **Alpha**: 64
-* **Dropout**: 0.05
+Ohio Child Speech Corpus (OCSC), preprocessed by [`../data_preprocessing_src/`](../data_preprocessing_src):
+clips of at most 30 s, 16 kHz mono, split 80/10/10 with random seed 42.
 
-Training hyperparameters (Training Arguments)
-* **Memory optimization**: `per_device_train_batch_size=2` combined with `gradient_accumulation_steps=8` achieves an effective batch size of 16.
-* **Precision**: FP16 enabled (`fp16=True`).
-* **Learning rate**: `1e-4` (with AdamW optimizer and linear warmup schedule).
-* **Early Stopping**: monitors validation `wer` with `patience=3` (stops if no improvement for 3 consecutive epochs).
+## Result
 
-* **Dynamic Padding**: uses custom `DataCollatorSpeechSeq2SeqWithPadding` to pad audio input features and replace label padding tokens with `-100` to mask the loss.
-* **Evaluation**: `predict_with_generate=True` enables autoregressive text generation during evaluation.
-* **Text Normalization**: before computing WER/CER, applies the Whisper English Normalizer (removes punctuation, lowercases) to both predictions and references, ensuring metrics accurately reflect speech recognition performance.
-
-Code should use modern configuration patterns.
-
-First test on Mac to see how long a single batch takes.
+LoRA fine-tuning reduced WER on the held-out OCSC test set from **0.1675** (untuned
+Whisper-large-v3 baseline) to **0.1217** — a 27.3% relative reduction — which is why this
+adapter was selected for deployment. The adapter in `best_adapter/` is then merged into
+the base model and converted for serving as described in `DEPLOYMENT.md`.
