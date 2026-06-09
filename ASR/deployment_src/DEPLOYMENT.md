@@ -9,7 +9,7 @@ This document explains how to deploy the LoRA fine-tuned Whisper large-v3 model 
 ```
 tiktalk_asr_cloud_deploy/
 ├── best_adapter/              # LoRA fine-tuning output files
-│   ├── adapter_config.json    # LoRA config (r=16, alpha=32, dropout=0.05)
+│   ├── adapter_config.json    # LoRA config (r=16, alpha=32, dropout=0.05, target_modules=q_proj/v_proj)
 │   ├── adapter_model.safetensors  # LoRA weights
 │   ├── processor_config.json  # Whisper processor config
 │   ├── tokenizer.json         # Tokenizer vocabulary
@@ -18,8 +18,7 @@ tiktalk_asr_cloud_deploy/
 ├── serve.py                   # Modal deployment script: inference service
 ├── pyproject.toml             # Python dependency declarations
 ├── DEPLOYMENT.md              # This document
-├── FineTuneInstruction.md     # Fine-tuning process notes
-└── project_document.md        # Project requirements document
+└── FineTuneInstruction.md     # Fine-tuning methodology notes
 ```
 
 ### Generated directories (not committed to Git)
@@ -66,8 +65,8 @@ tiktalk_asr_cloud_deploy/
 | ------------------------- | ----- | ---------------------------------------- |
 | `gpu`                     | `T4`  | Use T4 GPU                               |
 | `timeout`                 | 300s  | Per-request timeout                      |
-| `container_idle_timeout`  | 120s  | Auto-shutdown after container idle       |
-| `allow_concurrent_inputs` | 5     | Max concurrent requests                  |
+| `scaledown_window`        | 120s  | Auto-shutdown after container idle       |
+| `@modal.concurrent(max_inputs=...)` | 5 | Max concurrent requests              |
 
 #### API endpoint
 
@@ -145,8 +144,10 @@ uv run modal deploy serve.py
 
 After successful deployment, a web endpoint URL will be printed, in the format:
 ```
-https://your-workspace--tiktalk-asr-transcribe-endpoint.modal.run
+https://your-workspace--tiktalk-asr-serve-app.modal.run
 ```
+The transcription route is `POST /transcribe`, e.g.
+`https://your-workspace--tiktalk-asr-serve-app.modal.run/transcribe`.
 
 ### Step 6 (Development mode, optional): Hot-reload debugging
 

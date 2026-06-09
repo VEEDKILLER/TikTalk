@@ -1,6 +1,6 @@
 # Cohere Transcribe 03-2026 + LoRA 配置
 #
-# target_modules 已由 scripts/inspect_modules.py 扫描 modeling_cohere_asr.py 确认
+# target_modules 根据 modeling_cohere_asr.py 的结构确定
 # 架构（trust_remote_code）：
 #   - 第一套注意力：linear_q, linear_k, linear_v, linear_out  (n_feat × n_feat)
 #   - 第二套注意力：query_net, key_net, value_net, out_projection (hidden_size × hidden_size)

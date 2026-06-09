@@ -3,9 +3,8 @@ Cohere Transcribe 模型适配器
 使用 AutoModelForSpeechSeq2Seq + AutoProcessor（trust_remote_code=True）。
 
 注意事项：
-1. 运行 `python scripts/inspect_modules.py CohereForAI/cohere-transcribe-03-2026`
-   获取实际 Linear 层名，再更新 configs/cohere_transcribe_2026.yaml 中的
-   lora.target_modules。
+1. lora.target_modules 已根据模型实际的 Linear 层名确定，写在
+   configs/cohere_transcribe_2026.yaml 中；若更换模型，需检查模型结构后相应更新。
 2. 确认 HF 仓库 ID 后更新 yaml 中的 model.model_name（在 HF 模型页 URL 中可见）。
 3. 若模型推理接口不是标准 SpeechSeq2Seq（例如使用 CTC 或 decoder-only 架构），
    请根据模型 HF README 调整 transcribe_batch 中的调用方式。

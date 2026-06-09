@@ -1,5 +1,6 @@
 .DS_Store
 .claude/
+CLAUDE.md
 
 # Node / frontend
 node_modules/
@@ -18,3 +19,5 @@ venv/
 !.env.example
 
 .idea/
+
+*.pdf

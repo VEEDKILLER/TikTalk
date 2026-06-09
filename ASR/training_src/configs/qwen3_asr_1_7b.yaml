@@ -1,6 +1,6 @@
 # Qwen3-ASR-1.7B + LoRA 配置
 #
-# target_modules 已由 scripts/inspect_modules.py 确认（2026-04-13）
+# target_modules 根据模型结构确定
 # 架构：音频编码器(audio_tower) + Qwen3 文本解码器(model.layers)
 #   - 音频编码器注意力输出：out_proj
 #   - 文本解码器注意力：q_proj, k_proj, v_proj, o_proj
@@ -15,8 +15,7 @@ lora:
   r: 16
   lora_alpha: 32
   lora_dropout: 0.05
-  # 已由 inspect_modules.py 确认
-  # 保守策略（仅注意力层）：显存需求低，适合 3080Ti 16G
+  # 保守策略（仅注意力层）：显存需求低
   target_modules: [q_proj, k_proj, v_proj, o_proj, out_proj]
 
 training:
