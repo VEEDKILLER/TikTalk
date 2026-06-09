@@ -227,9 +227,10 @@ function InteractionPanel({
 // ── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [phase, setPhase] = useState(PHASE.SETUP)
-  const [options, setOptions] = useState({ categories: [], characters: [] })
+  const [options, setOptions] = useState({ categories: [], characters: [], actions: {} })
   const [category, setCategory] = useState('')
   const [character, setCharacter] = useState('boy')
+  const [action, setAction] = useState(null)  // null = "Surprise me" (random scene)
   const [imageBase64, setImageBase64] = useState(null)
   const [imageId, setImageId] = useState(null)
   const [groundTruth, setGroundTruth] = useState(null)
@@ -251,10 +252,18 @@ export default function App() {
         setOptions({
           categories: ['daily_life', 'school', 'outdoor', 'community', 'nature', 'festivals', 'helping', 'transportation'],
           characters: ['boy', 'girl', 'child', 'mother', 'father', 'grandmother', 'grandfather'],
+          actions: {},
         })
         setCategory('outdoor')
       })
   }, [])
+
+  // Changing the scene clears any previously chosen action (actions are
+  // category-specific), falling back to "Surprise me".
+  function handleCategory(cat) {
+    setCategory(cat)
+    setAction(null)
+  }
 
   async function handleGenerate() {
     if (!category) return
@@ -266,7 +275,7 @@ export default function App() {
     setResult(null)
 
     try {
-      const data = await api.generateImage({ category, character })
+      const data = await api.generateImage({ category, character, action })
       setImageId(data.image_id)
       setImageBase64(data.image_base64)
       setPhase(PHASE.READY)
@@ -352,10 +361,13 @@ export default function App() {
             <CategorySelector
               categories={options.categories}
               characters={options.characters}
+              actions={options.actions}
               selected={category}
               character={character}
-              onCategory={setCategory}
+              action={action}
+              onCategory={handleCategory}
               onCharacter={setCharacter}
+              onAction={setAction}
             />
             <div className="mt-6 border-t border-gray-100 pt-5">
               <button
@@ -380,6 +392,12 @@ export default function App() {
               <span className="font-medium capitalize">{category.replace('_', ' ')}</span>
               <span className="text-gray-300">·</span>
               <span>{character}</span>
+              {action && (
+                <>
+                  <span className="text-gray-300">·</span>
+                  <span className="italic">{action}</span>
+                </>
+              )}
             </div>
             {phase !== PHASE.EVALUATING && (
               <button
