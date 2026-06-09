@@ -19,6 +19,7 @@ TikTalk is an AI-powered English speaking practice application for young learner
 |-- TikTalk-frontend/     # Vite + React frontend
 |-- ASR/                  # ASR training, preprocessing, and deployment materials
 |-- VLM/                  # Standalone VLM ground-truth package
+|-- Diffusion/            # Local SDXL-Turbo baseline & cartoon-style LoRA experiments
 `-- README.md
 ```
 
@@ -143,3 +144,4 @@ npm run preview
 
 - `ASR/asr/asr_module.md` documents the ASR pipeline, training approach, and deployed transcription endpoint.
 - `VLM/README.md` documents the standalone VLM ground-truth workflow.
+- `Diffusion/README.md` documents the local SDXL-Turbo baseline and cartoon-style LoRA experiments (paper §4.1.1 / §4.2.1, Tables 4 & 9).

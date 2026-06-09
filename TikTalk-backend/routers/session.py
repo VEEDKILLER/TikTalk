@@ -37,7 +37,7 @@ async def session_start(req: SessionStartRequest):
     """Generate a practice image with DALL-E 3."""
     try:
         base_prompt = diffusion_service.resolve_prompt(
-            req.prompt, req.category, req.character
+            req.prompt, req.category, req.character, req.action
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

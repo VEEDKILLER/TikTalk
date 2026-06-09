@@ -16,9 +16,11 @@ import httpx
 from openai import AsyncOpenAI
 
 from tiktalk_diffusion.prompt_templates import (
+    CATEGORY_ACTIONS,
     CHARACTERS,
     SCENARIO_TEMPLATES,
     build_prompt,
+    compose_prompt,
     pick_template,
 )
 
@@ -75,17 +77,26 @@ def resolve_prompt(
     prompt: str | None,
     category: str | None,
     character: str,
+    action: str | None = None,
 ) -> str:
-    """Build a prompt string from either free-form text or a category template.
+    """Build a prompt string from free-form text or a structured selection.
 
-    When category is given, the action is chosen automatically from
-    CATEGORY_ACTIONS so the scene is always semantically coherent.
+    Resolution order:
+      1. Free-form ``prompt`` (if given) is used verbatim.
+      2. A specific ``action`` (anything other than None / empty / "random")
+         takes the *deterministic* path: the same (character, action) always
+         yields the same prompt — used for reproducible practice exercises.
+      3. Otherwise ("random" or no action) takes the *random* template path,
+         sampling a category template + action for varied practice.
     """
     if prompt:
         return prompt
-    if category:
-        return pick_template(category, character)
-    raise ValueError("Either 'prompt' or 'category' must be provided.")
+    if not category:
+        raise ValueError("Either 'prompt' or 'category' must be provided.")
+
+    if action and action.strip().lower() != "random":
+        return compose_prompt(character, action)
+    return pick_template(category, character)
 
 
 def get_image_path(image_id: str) -> Path:
@@ -103,4 +114,5 @@ def list_options() -> dict[str, Any]:
     return {
         "categories": list(SCENARIO_TEMPLATES.keys()),
         "characters": CHARACTERS,
+        "actions": {cat: CATEGORY_ACTIONS.get(cat, []) for cat in SCENARIO_TEMPLATES},
     }

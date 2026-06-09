@@ -36,37 +36,43 @@ NEGATIVE_PROMPT = (
 # Used to fill {action} placeholders so prompts stay coherent.
 CATEGORY_ACTIONS: dict[str, list[str]] = {
     "daily_life": [
-        "cooking", "eating", "washing dishes", "folding clothes",
-        "setting the table", "tidying up toys", "sweeping the floor",
-        "watering a plant on the windowsill",
+        "cooking in the kitchen", "eating a meal at the table",
+        "washing dishes in the kitchen", "folding clothes on the bed",
+        "setting the table for dinner", "tidying up toys in the bedroom",
+        "sweeping the floor at home", "watering a plant on the windowsill",
     ],
     "school": [
-        "reading a book", "drawing a picture", "writing in a notebook",
-        "painting on an easel", "doing homework", "raising a hand to answer",
-        "presenting a project",
+        "reading a book in the classroom", "drawing a picture at a desk",
+        "writing in a notebook in class", "painting on an easel during art class",
+        "doing homework at a desk", "raising a hand to answer a question in class",
+        "presenting a project in front of the class",
     ],
     "outdoor": [
-        "playing with a ball", "riding a bicycle", "flying a kite",
-        "playing catch", "jumping rope", "blowing bubbles",
-        "collecting seashells", "skating",
+        "playing with a ball in the park", "riding a bicycle on a path",
+        "flying a kite in an open field", "playing catch in the park",
+        "jumping rope in the playground", "blowing bubbles in the garden",
+        "collecting seashells on the beach", "skating on a path in the park",
     ],
     "community": [
-        "buying fruits at a stall", "borrowing books", "waiting for the bus",
-        "posting a letter", "queuing up", "buying a drink",
+        "buying fruits at a market stall", "borrowing books at the library",
+        "waiting for the bus at a bus stop", "posting a letter at a postbox",
+        "queuing up at a counter", "buying a drink from a hawker centre stall",
     ],
     "nature": [
-        "looking at animals", "planting flowers", "watering plants",
-        "watching butterflies", "feeding a bird", "picking apples",
-        "looking at stars through a telescope",
+        "looking at animals at the zoo", "planting flowers in a garden",
+        "watering plants in a garden", "watching butterflies in a meadow",
+        "feeding a bird in the park", "picking apples from a tree",
+        "looking at stars through a telescope at night",
     ],
     "festivals": [
-        "decorating a Christmas tree", "giving red packets",
-        "lighting a lantern", "opening presents",
-        "making mooncakes", "watching fireworks", "wearing a costume",
+        "decorating a Christmas tree at home", "giving red packets during Chinese New Year",
+        "lighting a lantern during Mid-Autumn Festival", "opening presents on Christmas morning",
+        "making mooncakes in the kitchen", "watching fireworks in the night sky",
+        "wearing a costume at a party",
     ],
     "helping": [
         "helping an elderly person cross the road",
-        "picking up litter", "sharing food with a friend",
+        "picking up litter in a park", "sharing food with a friend at school",
         "donating toys to a donation box", "carrying groceries for a neighbour",
         "watering plants in a community garden",
         "teaching a younger child to read",
@@ -74,9 +80,9 @@ CATEGORY_ACTIONS: dict[str, list[str]] = {
         "comforting a crying friend on a bench",
     ],
     "transportation": [
-        "looking out the window", "waiting at the airport departure gate",
-        "getting on a school bus", "crossing the road at a zebra crossing",
-        "looking at a map at a bus interchange", "loading luggage into a car",
+        "looking out the window on a train", "waiting at the airport departure gate",
+        "getting on a yellow school bus", "crossing the road at a zebra crossing",
+        "looking at a map at a bus interchange", "loading luggage into a car boot",
     ],
 }
 
@@ -200,6 +206,20 @@ ACTIONS = sorted({a for actions in CATEGORY_ACTIONS.values() for a in actions})
 def build_prompt(base_prompt: str) -> str:
     """Append the standard style suffix to any prompt."""
     return f"{base_prompt}, {STYLE_SUFFIX}"
+
+
+def compose_prompt(character: str, action: str) -> str:
+    """Deterministically compose a base prompt from an explicit character + action.
+
+    Unlike pick_template(), this path involves no randomness: the same
+    (character, action) pair always yields the same base prompt, so a
+    front-end selection can be exactly reproduced. Each action in
+    CATEGORY_ACTIONS is a self-contained phrase, so "A {character} {action}"
+    reads as a complete, coherent scene.
+    """
+    character = (character or "child").strip()
+    action = action.strip()
+    return f"A {character} {action}"
 
 
 def fill_template(template: str, character: str, category: str) -> str:

@@ -38,9 +38,9 @@ const COLOR_MAP = {
 }
 
 export default function CategorySelector({
-  categories, characters,
-  selected, character,
-  onCategory, onCharacter,
+  categories, characters, actions,
+  selected, character, action,
+  onCategory, onCharacter, onAction,
 }) {
   const selectedConfig = CATEGORY_CONFIG[selected]
   const selectedColor = selectedConfig ? COLOR_MAP[selectedConfig.color] : null
@@ -126,6 +126,49 @@ export default function CategorySelector({
             })}
         </div>
       </div>
+
+      {/* ── Action picker (optional → enables a reproducible scene) ─────────── */}
+      {selected && actions?.[selected]?.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+            3 · Pick an action <span className="normal-case text-gray-300">(optional)</span>
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {/* Random / surprise option */}
+            <button
+              onClick={() => onAction(null)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 text-xs font-medium
+                transition-all duration-150
+                ${!action || action === 'random'
+                  ? 'border-blue-400 bg-blue-50 text-blue-700 shadow-sm scale-105'
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                }`}
+            >
+              <span className="text-base leading-none">🎲</span>
+              <span>Surprise me</span>
+            </button>
+            {actions[selected].map((a) => {
+              const isSelected = action === a
+              return (
+                <button
+                  key={a}
+                  onClick={() => onAction(a)}
+                  className={`px-3 py-1.5 rounded-xl border-2 text-xs font-medium transition-all duration-150
+                    ${isSelected
+                      ? 'border-blue-400 bg-blue-50 text-blue-700 shadow-sm scale-105'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                    }`}
+                >
+                  {a.charAt(0).toUpperCase() + a.slice(1)}
+                </button>
+              )
+            })}
+          </div>
+          <p className="text-[10px] text-gray-400 mt-2">
+            Pick a specific action for the same scene every time, or “Surprise me” for variety.
+          </p>
+        </div>
+      )}
 
     </div>
   )

@@ -1,0 +1,11 @@
+# SDXL local baseline + LoRA style-adaptation experiments (Apple Silicon / MPS).
+# These reproduce the SDXL-Turbo baseline and the cartoon-style LoRA experiments
+# reported in the paper (visual stimulus generation, §4.2.1 and ablation Table 9).
+torch>=2.2.0
+torchvision>=0.17.0
+diffusers>=0.27.0
+transformers>=4.38.0
+peft>=0.9.0
+datasets>=2.18.0
+accelerate>=0.27.0
+Pillow>=10.0.0

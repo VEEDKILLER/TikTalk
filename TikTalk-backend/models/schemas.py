@@ -10,6 +10,14 @@ class SessionStartRequest(BaseModel):
     prompt: str | None = Field(None, description="Free-form image description prompt")
     category: str | None = Field(None, description="Predefined category (e.g. 'outdoor', 'school')")
     character: str = Field("boy", description="Character to use in template")
+    action: str | None = Field(
+        None,
+        description=(
+            "Specific action for a deterministic, reproducible scene "
+            "(e.g. 'cooking in the kitchen'). Use None or 'random' for a "
+            "randomly sampled scene."
+        ),
+    )
     apply_style: bool = Field(True, description="Append child-friendly style suffix to prompt")
 
 
@@ -105,6 +113,10 @@ class EvaluateResponse(BaseModel):
 class CategoriesResponse(BaseModel):
     categories: list[str]
     characters: list[str]
+    actions: dict[str, list[str]] = Field(
+        default_factory=dict,
+        description="Per-category list of selectable actions for deterministic scenes.",
+    )
 
 
 class HealthResponse(BaseModel):
